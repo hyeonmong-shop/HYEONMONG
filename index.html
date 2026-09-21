@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HYEONMONG — 永夢</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="header">
+    <a class="logo" href="index.html">HYEONMONG</a>
+    <nav>
+      <a href="#all">ALL</a>
+      <a href="#lighter">LIGHTER</a>
+      <a href="#about">ABOUT</a>
+      <a href="#cart">CART <span id="cartCount">0</span></a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero">
+      <p class="eyebrow">永夢</p>
+      <h1>영원한 꿈</h1>
+      <p>HYEONMONG OBJECT SHOP</p>
+    </section>
+
+    <section class="shop" id="all">
+      <div class="section-title">
+        <h2>ALL PRODUCTS</h2>
+        <span id="productCount"></span>
+      </div>
+      <div id="products" class="product-grid"></div>
+    </section>
+
+    <section class="about" id="about">
+      <p class="eyebrow">ABOUT</p>
+      <h2>永夢</h2>
+      <p>영원한 꿈을 담은 작은 물건들을 소개합니다.</p>
+    </section>
+
+    <section class="cart" id="cart">
+      <div class="section-title">
+        <h2>CART</h2>
+      </div>
+      <div id="cartItems"></div>
+      <div class="cart-total">
+        <span>TOTAL</span>
+        <strong id="cartTotal">0원</strong>
+      </div>
+      <button id="orderButton" class="order-button">주문하기</button>
+      <p class="notice">현재는 쇼핑몰 디자인/장바구니 테스트용입니다. 실제 결제 연동은 다음 단계에서 추가합니다.</p>
+    </section>
+  </main>
+
+  <footer>
+    <p>HYEONMONG · 永夢</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
