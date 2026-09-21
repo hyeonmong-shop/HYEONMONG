@@ -136,7 +136,8 @@ a {
   width: 100%;
   text-align: center;
 
-  transform: translateX(16px);
+  position: relative;
+  left: 10px;
 
   font-size: 40px;
   font-weight: 300;
@@ -634,14 +635,15 @@ a {
   }
 
   .hero h1 {
-    width: 100%;
+  width: 100%;
+  text-align: center;
 
-    text-align: center;
+  position: relative;
+  left: 10px;
 
-    font-size: 32px;
-
-    letter-spacing: 9px;
-  }
+  font-size: 32px;
+  letter-spacing: 9px;
+}
 
   .hero p {
     font-size: 11px;
