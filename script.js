@@ -552,7 +552,7 @@ paymentBtn.onclick = async function () {
 
         currency: "KRW",
 
-        value: total
+        value: total + SHIPPING_FEE
 
       },
 
