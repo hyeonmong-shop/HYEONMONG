@@ -431,7 +431,7 @@ paymentBtn.onclick = async function () {
   }
 
 
-  // 장바구니 총 금액 계산
+  // 총 결제금액 계산
   let total = 0;
 
   cart.forEach(item => {
@@ -439,14 +439,20 @@ paymentBtn.onclick = async function () {
   });
 
 
-  // 토스 결제 객체 생성
+  // 토스페이먼츠 초기화
   const tossPayments =
     TossPayments(TOSS_CLIENT_KEY);
 
+
+  // 구매자 식별용 임시 키
+  const customerKey =
+    "HYEONMONG_" +
+    crypto.randomUUID();
+
+
   const payment =
     tossPayments.payment({
-      customerKey:
-        "hyeonmong_" + Date.now()
+      customerKey: customerKey
     });
 
 
@@ -462,12 +468,16 @@ paymentBtn.onclick = async function () {
       },
 
       orderId:
-        "HYEONMONG_" + Date.now(),
+        "HYEONMONG_" +
+        crypto.randomUUID(),
 
       orderName:
         cart.length === 1
           ? cart[0].name
-          : cart[0].name + " 외 " + (cart.length - 1) + "건",
+          : cart[0].name +
+            " 외 " +
+            (cart.length - 1) +
+            "건",
 
       customerName: name,
 
@@ -486,10 +496,12 @@ paymentBtn.onclick = async function () {
 
   } catch (error) {
 
-    console.error(error);
+    console.error("Toss Payments Error:", error);
 
     alert(
-      "결제창을 여는 중 문제가 발생했습니다."
+      "결제창을 여는 중 문제가 발생했습니다.\n\n" +
+      "오류: " +
+      (error?.message || "알 수 없는 오류")
     );
 
   }
