@@ -137,7 +137,7 @@ a {
   text-align: center;
 
   position: relative;
-  left: 10px;
+  left: 4px;
 
   font-size: 40px;
   font-weight: 300;
@@ -639,12 +639,12 @@ a {
   text-align: center;
 
   position: relative;
-  left: 10px;
+  left: 4px;
 
   font-size: 32px;
   letter-spacing: 9px;
 }
-
+  
   .hero p {
     font-size: 11px;
 
