@@ -1,3 +1,4 @@
+const TOSS_CLIENT_KEY = "test_gck_docs_Ovk5rk1EwkEbP0W43n07xlzm";
 // ==============================
 // 永夢 HYEONMONG SHOP
 // ==============================
