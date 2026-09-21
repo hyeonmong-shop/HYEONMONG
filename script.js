@@ -403,7 +403,7 @@ closeOrderBtn.onclick = function () {
 // 결제하기
 // ==============================
 
-paymentBtn.onclick = function () {
+paymentBtn.onclick = async function () {
 
   const name =
     document.getElementById("order-name").value.trim();
@@ -416,32 +416,84 @@ paymentBtn.onclick = function () {
 
 
   if (!name) {
-
     alert("이름을 입력해주세요.");
-
     return;
   }
-
 
   if (!phone) {
-
     alert("연락처를 입력해주세요.");
-
     return;
   }
-
 
   if (!address) {
-
     alert("배송지를 입력해주세요.");
-
     return;
   }
 
 
-  alert(
-    "주문 정보가 입력되었습니다."
-  );
+  // 장바구니 총 금액 계산
+  let total = 0;
+
+  cart.forEach(item => {
+    total += item.price * item.quantity;
+  });
+
+
+  // 토스 결제 객체 생성
+  const tossPayments =
+    TossPayments(TOSS_CLIENT_KEY);
+
+  const payment =
+    tossPayments.payment({
+      customerKey:
+        "hyeonmong_" + Date.now()
+    });
+
+
+  try {
+
+    await payment.requestPayment({
+
+      method: "CARD",
+
+      amount: {
+        currency: "KRW",
+        value: total
+      },
+
+      orderId:
+        "HYEONMONG_" + Date.now(),
+
+      orderName:
+        cart.length === 1
+          ? cart[0].name
+          : cart[0].name + " 외 " + (cart.length - 1) + "건",
+
+      customerName: name,
+
+      customerMobilePhone:
+        phone.replace(/[^0-9]/g, ""),
+
+      successUrl:
+        window.location.origin +
+        "/HYEONMONG/success.html",
+
+      failUrl:
+        window.location.origin +
+        "/HYEONMONG/fail.html"
+
+    });
+
+  } catch (error) {
+
+    console.error(error);
+
+    alert(
+      "결제창을 여는 중 문제가 발생했습니다."
+    );
+
+  }
+
 };
 
 
