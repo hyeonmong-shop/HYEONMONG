@@ -1,4 +1,6 @@
 const TOSS_CLIENT_KEY = "test_gck_docs_Ovk5rk1EwkEbP0W43n07xlzm";
+console.log("HYEONMONG TOSS TEST");
+
 // ==============================
 // 永夢 HYEONMONG SHOP
 // ==============================
