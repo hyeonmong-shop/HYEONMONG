@@ -274,8 +274,14 @@ function renderCart() {
 
   cartCount.textContent = count;
 
-  cartTotal.textContent =
-    total.toLocaleString() + "원";
+  const finalTotal =
+  cart.length > 0
+    ? total + SHIPPING_FEE
+    : 0;
+
+
+cartTotal.textContent =
+  finalTotal.toLocaleString() + "원";
 }
 
 
