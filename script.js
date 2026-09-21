@@ -24,7 +24,7 @@ let currentSelectedProduct = null;
 
 
 // ==============================
-// DOM 요소
+// DOM
 // ==============================
 
 const productGrid =
@@ -90,7 +90,7 @@ const paymentBtn =
 
 
 // ==============================
-// 상품 목록
+// 상품 표시
 // ==============================
 
 function renderProducts() {
@@ -102,23 +102,18 @@ function renderProducts() {
     const card =
       document.createElement("article");
 
-    card.className =
-      "product-card";
-
+    card.className = "product-card";
 
     card.innerHTML = `
       <button
         class="product-image"
         type="button"
       >
-
         <img
           src="${product.image}"
           alt="${product.name}"
         >
-
       </button>
-
 
       <div class="product-info">
 
@@ -138,9 +133,9 @@ function renderProducts() {
     `;
 
 
-    // 사진 클릭
     const imageButton =
       card.querySelector(".product-image");
+
 
     imageButton.addEventListener(
       "click",
@@ -150,7 +145,6 @@ function renderProducts() {
     );
 
 
-    // 상품 정보 클릭
     card.addEventListener(
       "click",
       event => {
@@ -173,41 +167,29 @@ function renderProducts() {
 
 
 // ==============================
-// 상품 상세
+// 상품 상세 열기
 // ==============================
 
 function openDetailModal(product) {
 
-  currentSelectedProduct =
-    product;
+  currentSelectedProduct = product;
 
+  detailImg.src = product.image;
 
-  detailImg.src =
-    product.image;
-
-  detailImg.alt =
-    product.name;
-
+  detailImg.alt = product.name;
 
   detailTitle.innerText =
     product.name;
 
-
   detailPrice.innerText =
     `${product.price.toLocaleString()}원`;
-
 
   detailDesc.innerText =
     product.desc;
 
+  detailModal.classList.add("active");
 
-  detailModal.classList.add(
-    "active"
-  );
-
-
-  document.body.style.overflow =
-    "hidden";
+  document.body.style.overflow = "hidden";
 }
 
 
@@ -249,20 +231,11 @@ addToCartBtn.addEventListener(
     saveCart();
 
 
-    // 상세창 닫기
-    detailModal.classList.remove(
-      "active"
-    );
+    detailModal.classList.remove("active");
 
+    cartModal.classList.add("active");
 
-    // 장바구니 열기
-    cartModal.classList.add(
-      "active"
-    );
-
-
-    document.body.style.overflow =
-      "hidden";
+    document.body.style.overflow = "hidden";
   }
 );
 
@@ -278,13 +251,12 @@ function saveCart() {
     JSON.stringify(cart)
   );
 
-
   updateCartUI();
 }
 
 
 // ==============================
-// 장바구니 화면
+// 장바구니 표시
 // ==============================
 
 function updateCartUI() {
@@ -301,14 +273,12 @@ function updateCartUI() {
     totalCount;
 
 
-  cartItemsContainer.innerHTML =
-    "";
+  cartItemsContainer.innerHTML = "";
 
 
   let total = 0;
 
 
-  // 장바구니가 비어있는 경우
   if (cart.length === 0) {
 
     cartItemsContainer.innerHTML = `
@@ -325,8 +295,6 @@ function updateCartUI() {
 
   } else {
 
-
-    // 상품 출력
     cart.forEach(item => {
 
       total +=
@@ -382,7 +350,6 @@ function updateCartUI() {
           <button
             type="button"
             onclick="removeItem(${item.id})"
-            aria-label="상품 삭제"
           >
             ×
           </button>
@@ -391,9 +358,7 @@ function updateCartUI() {
       `;
 
 
-      cartItemsContainer.appendChild(
-        div
-      );
+      cartItemsContainer.appendChild(div);
 
     });
   }
@@ -422,16 +387,14 @@ window.changeQty =
     }
 
 
-    item.quantity +=
-      delta;
+    item.quantity += delta;
 
 
     if (item.quantity <= 0) {
 
       cart =
         cart.filter(
-          item =>
-            item.id !== id
+          item => item.id !== id
         );
 
     }
@@ -450,8 +413,7 @@ window.removeItem =
 
     cart =
       cart.filter(
-        item =>
-          item.id !== id
+        item => item.id !== id
       );
 
 
@@ -469,14 +431,9 @@ openCartBtn.addEventListener(
 
     updateCartUI();
 
+    cartModal.classList.add("active");
 
-    cartModal.classList.add(
-      "active"
-    );
-
-
-    document.body.style.overflow =
-      "hidden";
+    document.body.style.overflow = "hidden";
   }
 );
 
@@ -489,13 +446,9 @@ closeCartBtn.addEventListener(
   "click",
   () => {
 
-    cartModal.classList.remove(
-      "active"
-    );
+    cartModal.classList.remove("active");
 
-
-    document.body.style.overflow =
-      "";
+    document.body.style.overflow = "";
   }
 );
 
@@ -508,36 +461,31 @@ closeDetailBtn.addEventListener(
   "click",
   () => {
 
-    detailModal.classList.remove(
-      "active"
-    );
+    detailModal.classList.remove("active");
 
-
-    document.body.style.overflow =
-      "";
+    document.body.style.overflow = "";
   }
 );
 
 
 // ==============================
-// 주문 화면 열기
+// ⭐ 주문하기
 // ==============================
 
 checkoutBtn.addEventListener(
   "click",
   () => {
 
+    // 장바구니가 비어있으면 중단
     if (cart.length === 0) {
 
-      alert(
-        "장바구니가 비어 있습니다."
-      );
+      alert("장바구니가 비어 있습니다.");
 
       return;
     }
 
 
-    // 장바구니 총액 계산
+    // 총 금액 계산
     const total =
       cart.reduce(
         (sum, item) =>
@@ -548,24 +496,20 @@ checkoutBtn.addEventListener(
       );
 
 
+    // 주문 화면의 금액 표시
     orderTotalEl.innerText =
       `${total.toLocaleString()}원`;
 
 
     // 장바구니 닫기
-    cartModal.classList.remove(
-      "active"
-    );
+    cartModal.classList.remove("active");
 
 
-    // 주문 화면 열기
-    orderModal.classList.add(
-      "active"
-    );
+    // ⭐ 주문 정보 입력창 열기
+    orderModal.classList.add("active");
 
 
-    document.body.style.overflow =
-      "hidden";
+    document.body.style.overflow = "hidden";
   }
 );
 
@@ -578,13 +522,9 @@ closeOrderBtn.addEventListener(
   "click",
   () => {
 
-    orderModal.classList.remove(
-      "active"
-    );
+    orderModal.classList.remove("active");
 
-
-    document.body.style.overflow =
-      "";
+    document.body.style.overflow = "";
   }
 );
 
@@ -597,17 +537,47 @@ orderModal.addEventListener(
   "click",
   event => {
 
-    if (
-      event.target === orderModal
-    ) {
+    if (event.target === orderModal) {
 
-      orderModal.classList.remove(
-        "active"
-      );
+      orderModal.classList.remove("active");
+
+      document.body.style.overflow = "";
+    }
+  }
+);
 
 
-      document.body.style.overflow =
-        "";
+// ==============================
+// 상품 상세 바깥 클릭
+// ==============================
+
+detailModal.addEventListener(
+  "click",
+  event => {
+
+    if (event.target === detailModal) {
+
+      detailModal.classList.remove("active");
+
+      document.body.style.overflow = "";
+    }
+  }
+);
+
+
+// ==============================
+// 장바구니 바깥 클릭
+// ==============================
+
+cartModal.addEventListener(
+  "click",
+  event => {
+
+    if (event.target === cartModal) {
+
+      cartModal.classList.remove("active");
+
+      document.body.style.overflow = "";
     }
   }
 );
@@ -622,28 +592,26 @@ paymentBtn.addEventListener(
   () => {
 
     const name =
-      document.getElementById(
-        "order-name"
-      ).value.trim();
+      document.getElementById("order-name")
+        .value
+        .trim();
 
 
     const phone =
-      document.getElementById(
-        "order-phone"
-      ).value.trim();
+      document.getElementById("order-phone")
+        .value
+        .trim();
 
 
     const address =
-      document.getElementById(
-        "order-address"
-      ).value.trim();
+      document.getElementById("order-address")
+        .value
+        .trim();
 
 
     if (!name) {
 
-      alert(
-        "받으실 분 이름을 입력해주세요."
-      );
+      alert("받으실 분 이름을 입력해주세요.");
 
       return;
     }
@@ -651,9 +619,7 @@ paymentBtn.addEventListener(
 
     if (!phone) {
 
-      alert(
-        "연락처를 입력해주세요."
-      );
+      alert("연락처를 입력해주세요.");
 
       return;
     }
@@ -661,16 +627,17 @@ paymentBtn.addEventListener(
 
     if (!address) {
 
-      alert(
-        "배송지를 입력해주세요."
-      );
+      alert("배송지를 입력해주세요.");
 
       return;
     }
 
 
+    // 여기까지 입력되면 다음 단계에서
+    // 실제 결제 시스템을 연결하면 됩니다.
+
     alert(
-      "주문 정보가 확인되었습니다.\n\n다음 단계에서 실제 결제를 연결할게요."
+      "주문 정보가 입력되었습니다."
     );
 
   }
@@ -678,55 +645,7 @@ paymentBtn.addEventListener(
 
 
 // ==============================
-// 상세창 바깥 클릭
-// ==============================
-
-detailModal.addEventListener(
-  "click",
-  event => {
-
-    if (
-      event.target === detailModal
-    ) {
-
-      detailModal.classList.remove(
-        "active"
-      );
-
-
-      document.body.style.overflow =
-        "";
-    }
-  }
-);
-
-
-// ==============================
-// 장바구니 바깥 클릭
-// ==============================
-
-cartModal.addEventListener(
-  "click",
-  event => {
-
-    if (
-      event.target === cartModal
-    ) {
-
-      cartModal.classList.remove(
-        "active"
-      );
-
-
-      document.body.style.overflow =
-        "";
-    }
-  }
-);
-
-
-// ==============================
-// 페이지 시작
+// 시작
 // ==============================
 
 renderProducts();
