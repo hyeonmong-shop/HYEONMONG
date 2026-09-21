@@ -404,7 +404,7 @@ closeOrderBtn.onclick = function () {
 // 결제하기
 // ==============================
 
-paymentBtn.onclick = async function () {
+paymentBtn.onclick = function () {
 
   const name =
     document.getElementById("order-name").value.trim();
@@ -416,6 +416,7 @@ paymentBtn.onclick = async function () {
     document.getElementById("order-address").value.trim();
 
 
+  // 입력 확인
   if (!name) {
     alert("이름을 입력해주세요.");
     return;
@@ -440,26 +441,29 @@ paymentBtn.onclick = async function () {
   });
 
 
+  // 주문번호 생성
+  const orderId =
+    "HYEONMONG_" +
+    crypto.randomUUID();
+
+
   // 토스페이먼츠 초기화
   const tossPayments =
     TossPayments(TOSS_CLIENT_KEY);
 
 
-  // 구매자 식별용 임시 키
-  const customerKey =
-    "HYEONMONG_" +
-    crypto.randomUUID();
-
-
   const payment =
     tossPayments.payment({
-      customerKey: customerKey
+      customerKey:
+        "HYEONMONG_" +
+        crypto.randomUUID()
     });
 
 
   try {
 
-    await payment.requestPayment({
+    // 모바일 Redirect 방식
+    payment.requestPayment({
 
       method: "CARD",
 
@@ -468,9 +472,7 @@ paymentBtn.onclick = async function () {
         value: total
       },
 
-      orderId:
-        "HYEONMONG_" +
-        crypto.randomUUID(),
+      orderId: orderId,
 
       orderName:
         cart.length === 1
@@ -497,16 +499,17 @@ paymentBtn.onclick = async function () {
 
   } catch (error) {
 
-    console.error("Toss Payments Error:", error);
+    console.error(
+      "Toss Payments Error:",
+      error
+    );
 
     alert(
       "결제창을 여는 중 문제가 발생했습니다.\n\n" +
-      "오류: " +
-      (error?.message || "알 수 없는 오류")
+      (error?.message ||
+       "알 수 없는 오류")
     );
-
   }
-
 };
 
 
