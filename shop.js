@@ -553,5 +553,3 @@ orderModal.onclick = function (event) {
 
 renderProducts();
 renderCart();
-
-paym
