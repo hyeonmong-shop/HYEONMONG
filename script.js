@@ -399,48 +399,196 @@ closeOrderBtn.onclick = function () {
 
 
 // ==============================
-// 결제하기
+// Toss Payments 결제
 // ==============================
 
-paymentBtn.onclick = function () {
+paymentBtn.onclick = async function () {
 
-  const name =
-    document.getElementById("order-name").value.trim();
+  try {
 
-  const phone =
-    document.getElementById("order-phone").value.trim();
+    const name =
+      document.getElementById("order-name").value.trim();
 
-  const address =
-    document.getElementById("order-address").value.trim();
+    const phone =
+      document.getElementById("order-phone").value.trim();
+
+    const address =
+      document.getElementById("order-address").value.trim();
 
 
-  if (!name) {
+    // 이름 확인
+    if (!name) {
 
-    alert("이름을 입력해주세요.");
+      alert("이름을 입력해주세요.");
 
-    return;
+      return;
+    }
+
+
+    // 연락처 확인
+    if (!phone) {
+
+      alert("연락처를 입력해주세요.");
+
+      return;
+    }
+
+
+    // 배송지 확인
+    if (!address) {
+
+      alert("배송지를 입력해주세요.");
+
+      return;
+    }
+
+
+    // 장바구니 확인
+    if (cart.length === 0) {
+
+      alert("장바구니가 비어 있습니다.");
+
+      return;
+    }
+
+
+    // 총 금액
+    let total = 0;
+
+    cart.forEach(item => {
+
+      total +=
+        item.price * item.quantity;
+
+    });
+
+
+    // Toss SDK 확인
+    if (
+      typeof TossPayments !==
+      "function"
+    ) {
+
+      alert(
+        "결제 모듈을 불러오지 못했습니다.\n" +
+        "페이지를 새로고침한 후 다시 시도해주세요."
+      );
+
+      return;
+    }
+
+
+    // 테스트용 클라이언트 키
+    const clientKey =
+      "test_gck_docs_Ovk5rk1EwkEbP0W43n07xlzm";
+
+
+    // 주문번호
+    const orderId =
+      "HYEONMONG_" +
+      crypto
+        .randomUUID()
+        .replace(/-/g, "")
+        .slice(0, 32);
+
+
+    // 고객 키
+    const customerKey =
+      "HYEONMONG_" +
+      crypto
+        .randomUUID()
+        .replace(/-/g, "")
+        .slice(0, 32);
+
+
+    // Toss Payments 생성
+    const tossPayments =
+      TossPayments(clientKey);
+
+
+    // 결제 객체
+    const payment =
+      tossPayments.payment({
+        customerKey:
+          customerKey
+      });
+
+
+    // 주문명
+    let orderName;
+
+    if (cart.length === 1) {
+
+      orderName =
+        cart[0].name;
+
+    } else {
+
+      orderName =
+        cart[0].name +
+        " 외 " +
+        (cart.length - 1) +
+        "건";
+
+    }
+
+
+    // 결제창 열기
+    await payment.requestPayment({
+
+      method: "CARD",
+
+      amount: {
+
+        currency: "KRW",
+
+        value: total
+
+      },
+
+      orderId:
+        orderId,
+
+      orderName:
+        orderName,
+
+      customerName:
+        name,
+
+      customerMobilePhone:
+        phone.replace(
+          /[^0-9]/g,
+          ""
+        ),
+
+      successUrl:
+        window.location.origin +
+        "/HYEONMONG/success.html",
+
+      failUrl:
+        window.location.origin +
+        "/HYEONMONG/fail.html"
+
+    });
+
+  } catch (error) {
+
+    console.error(
+      "Toss Payments Error:",
+      error
+    );
+
+
+    alert(
+      "결제창을 열 수 없습니다.\n\n" +
+      (
+        error?.message ||
+        "알 수 없는 오류"
+      )
+    );
+
   }
 
-
-  if (!phone) {
-
-    alert("연락처를 입력해주세요.");
-
-    return;
-  }
-
-
-  if (!address) {
-
-    alert("배송지를 입력해주세요.");
-
-    return;
-  }
-
-
-  alert(
-    "주문 정보가 입력되었습니다."
-  );
 };
 
 
