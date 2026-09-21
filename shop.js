@@ -553,3 +553,7 @@ orderModal.onclick = function (event) {
 
 renderProducts();
 renderCart();
+
+paymentBtn.onclick = function () {
+  alert("결제 버튼이 눌렸습니다.");
+};
