@@ -382,8 +382,11 @@ checkoutBtn.onclick = function () {
     total += item.price * item.quantity;
   });
 
-  orderTotal.textContent =
-    total.toLocaleString() + "원";
+  const finalTotal =
+  total + SHIPPING_FEE;
+
+orderTotal.textContent =
+  finalTotal.toLocaleString() + "원";
 
   cartModal.classList.remove("active");
 
