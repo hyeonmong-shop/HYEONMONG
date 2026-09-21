@@ -1,57 +1,96 @@
 <!DOCTYPE html>
 <html lang="ko">
+
 <head>
+
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
 
   <title>永夢 | 영몽</title>
 
-  <link rel="stylesheet" href="style.css">
+  <link
+    rel="stylesheet"
+    href="style.css"
+  >
 
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    rel="preconnect"
+    href="https://fonts.googleapis.com"
+  >
+
+  <link
+    rel="preconnect"
+    href="https://fonts.gstatic.com"
+    crossorigin
+  >
 
   <link
     href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600&display=swap"
     rel="stylesheet"
   >
+
 </head>
+
 
 <body>
 
-  <!-- HEADER -->
+
+  <!-- =========================
+       HEADER
+  ========================== -->
+
   <header class="header">
 
-    <a href="#" class="logo">
+    <a
+      href="#"
+      class="logo"
+    >
       永夢
     </a>
+
 
     <button
       class="cart-btn"
       id="open-cart"
       type="button"
     >
+
       장바구니
-      <span id="cart-count">0</span>
+
+      <span id="cart-count">
+        0
+      </span>
+
     </button>
 
   </header>
 
 
-  <!-- HERO -->
+
+  <!-- =========================
+       HERO
+  ========================== -->
+
   <section class="hero">
 
     <p class="hero-symbol">
       永夢
     </p>
 
+
     <h1>
       永 夢
     </h1>
 
+
     <p>
       몽환과 유랑이 머무는 공간
     </p>
+
 
     <a
       href="#collection"
@@ -63,7 +102,11 @@
   </section>
 
 
-  <!-- COLLECTION -->
+
+  <!-- =========================
+       COLLECTION
+  ========================== -->
+
   <main
     class="container"
     id="collection"
@@ -72,6 +115,7 @@
     <p class="collection-subtitle">
       HYEONMONG OBJECT
     </p>
+
 
     <h2 class="section-title">
       COLLECTION
@@ -83,53 +127,25 @@
       id="product-grid"
     >
 
-      <!-- 流浪 핑크 라이터 -->
-      <article class="product-card">
-
-        <button
-          class="product-image"
-          type="button"
-          onclick="openProductDetail()"
-        >
-
-          <img
-            src="AED2C668-95D1-4688-B695-084FE096312A.jpeg"
-            alt="流浪 핑크 라이터"
-          >
-
-        </button>
-
-
-        <div class="product-info">
-
-          <p class="product-category">
-            LIGHTER
-          </p>
-
-          <h3>
-            流浪 핑크 라이터
-          </h3>
-
-          <p class="product-price">
-            5,000원
-          </p>
-
-        </div>
-
-      </article>
+      <!-- 상품은 script.js에서 자동으로 표시됩니다 -->
 
     </div>
 
   </main>
 
 
-  <!-- PRODUCT DETAIL -->
+
+  <!-- =========================
+       PRODUCT DETAIL
+  ========================== -->
+
   <div
     class="modal-overlay"
     id="detail-modal"
   >
 
     <div class="modal-content">
+
 
       <button
         class="close-btn"
@@ -142,6 +158,7 @@
 
       <div class="detail-body">
 
+
         <img
           id="detail-img"
           src="AED2C668-95D1-4688-B695-084FE096312A.jpeg"
@@ -151,13 +168,16 @@
 
         <div class="detail-info">
 
+
           <p class="product-category">
             HYEONMONG / LIGHTER
           </p>
 
+
           <h2 id="detail-title">
             流浪 핑크 라이터
           </h2>
+
 
           <p
             class="detail-price"
@@ -173,14 +193,6 @@
           >
             핑크 컬러의 라이터에
             영몽의 감성을 담았습니다.
-            <br><br>
-
-            流浪 — 정해진 곳 없이
-            흘러가는 것.
-            <br><br>
-
-            작은 물건에도 하나의 이야기를
-            담아냅니다.
           </p>
 
 
@@ -192,6 +204,7 @@
             장바구니 담기
           </button>
 
+
         </div>
 
       </div>
@@ -201,7 +214,11 @@
   </div>
 
 
-  <!-- CART -->
+
+  <!-- =========================
+       CART
+  ========================== -->
+
   <div
     class="modal-overlay"
     id="cart-modal"
@@ -209,13 +226,16 @@
 
     <div class="cart-content">
 
+
       <div class="cart-header">
+
 
         <div>
 
           <p class="product-category">
             HYEONMONG
           </p>
+
 
           <h2>
             장바구니
@@ -232,23 +252,29 @@
           &times;
         </button>
 
+
       </div>
+
 
 
       <div
         class="cart-items"
         id="cart-items"
       >
+
       </div>
 
 
+
       <div class="cart-footer">
+
 
         <div class="cart-total">
 
           <span>
             총 상품금액
           </span>
+
 
           <strong id="cart-total-price">
             0원
@@ -265,6 +291,7 @@
           주문하기
         </button>
 
+
       </div>
 
     </div>
@@ -272,25 +299,190 @@
   </div>
 
 
-  <!-- FOOTER -->
+
+  <!-- =========================
+       ORDER
+  ========================== -->
+
+  <div
+    class="modal-overlay"
+    id="order-modal"
+  >
+
+    <div class="cart-content">
+
+
+      <div class="cart-header">
+
+
+        <div>
+
+          <p class="product-category">
+            HYEONMONG
+          </p>
+
+
+          <h2>
+            주문하기
+          </h2>
+
+        </div>
+
+
+        <button
+          class="close-btn"
+          id="close-order"
+          type="button"
+        >
+          &times;
+        </button>
+
+      </div>
+
+
+
+      <!-- 주문자 정보 -->
+
+      <div
+        style="
+          margin-bottom:25px;
+        "
+      >
+
+
+        <label>
+          이름
+        </label>
+
+
+        <input
+          id="order-name"
+          type="text"
+          placeholder="받으실 분 이름"
+          style="
+            width:100%;
+            padding:13px;
+            margin-top:8px;
+            margin-bottom:15px;
+            border:1px solid #eadde1;
+            font-family:inherit;
+          "
+        >
+
+
+
+        <label>
+          연락처
+        </label>
+
+
+        <input
+          id="order-phone"
+          type="tel"
+          placeholder="010-0000-0000"
+          style="
+            width:100%;
+            padding:13px;
+            margin-top:8px;
+            margin-bottom:15px;
+            border:1px solid #eadde1;
+            font-family:inherit;
+          "
+        >
+
+
+
+        <label>
+          배송지
+        </label>
+
+
+        <input
+          id="order-address"
+          type="text"
+          placeholder="주소를 입력해주세요"
+          style="
+            width:100%;
+            padding:13px;
+            margin-top:8px;
+            border:1px solid #eadde1;
+            font-family:inherit;
+          "
+        >
+
+      </div>
+
+
+
+      <!-- 주문 금액 -->
+
+      <div class="cart-footer">
+
+
+        <div class="cart-total">
+
+          <span>
+            결제 예정 금액
+          </span>
+
+
+          <strong id="order-total">
+            0원
+          </strong>
+
+        </div>
+
+
+        <button
+          class="primary-btn"
+          id="payment-btn"
+          type="button"
+        >
+          결제하기
+        </button>
+
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+
+  <!-- =========================
+       FOOTER
+  ========================== -->
+
   <footer class="footer">
+
 
     <div class="footer-logo">
       永夢
     </div>
 
+
     <p>
       영원한 꿈을 담다.
     </p>
+
 
     <small>
       © 2026 HYEONMONG
     </small>
 
+
   </footer>
 
 
+
+  <!-- =========================
+       JAVASCRIPT
+  ========================== -->
+
   <script src="script.js"></script>
 
+
 </body>
+
 </html>
