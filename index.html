@@ -1,61 +1,296 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>HYEONMONG — 永夢</title>
+
+  <title>永夢 | 영몽</title>
+
   <link rel="stylesheet" href="style.css">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600&display=swap"
+    rel="stylesheet"
+  >
 </head>
+
 <body>
+
+  <!-- HEADER -->
   <header class="header">
-    <a class="logo" href="index.html">HYEONMONG</a>
-    <nav>
-      <a href="#all">ALL</a>
-      <a href="#lighter">LIGHTER</a>
-      <a href="#about">ABOUT</a>
-      <a href="#cart">CART <span id="cartCount">0</span></a>
-    </nav>
+
+    <a href="#" class="logo">
+      永夢
+    </a>
+
+    <button
+      class="cart-btn"
+      id="open-cart"
+      type="button"
+    >
+      장바구니
+      <span id="cart-count">0</span>
+    </button>
+
   </header>
 
-  <main>
-    <section class="hero">
-      <p class="eyebrow">永夢</p>
-      <h1>영원한 꿈</h1>
-      <p>HYEONMONG OBJECT SHOP</p>
-    </section>
 
-    <section class="shop" id="all">
-      <div class="section-title">
-        <h2>ALL PRODUCTS</h2>
-        <span id="productCount"></span>
-      </div>
-      <div id="products" class="product-grid"></div>
-    </section>
+  <!-- HERO -->
+  <section class="hero">
 
-    <section class="about" id="about">
-      <p class="eyebrow">ABOUT</p>
-      <h2>永夢</h2>
-      <p>영원한 꿈을 담은 작은 물건들을 소개합니다.</p>
-    </section>
+    <p class="hero-symbol">
+      永夢
+    </p>
 
-    <section class="cart" id="cart">
-      <div class="section-title">
-        <h2>CART</h2>
-      </div>
-      <div id="cartItems"></div>
-      <div class="cart-total">
-        <span>TOTAL</span>
-        <strong id="cartTotal">0원</strong>
-      </div>
-      <button id="orderButton" class="order-button">주문하기</button>
-      <p class="notice">현재는 쇼핑몰 디자인/장바구니 테스트용입니다. 실제 결제 연동은 다음 단계에서 추가합니다.</p>
-    </section>
+    <h1>
+      永 夢
+    </h1>
+
+    <p>
+      몽환과 유랑이 머무는 공간
+    </p>
+
+    <a
+      href="#collection"
+      class="hero-button"
+    >
+      SHOP NOW
+    </a>
+
+  </section>
+
+
+  <!-- COLLECTION -->
+  <main
+    class="container"
+    id="collection"
+  >
+
+    <p class="collection-subtitle">
+      HYEONMONG OBJECT
+    </p>
+
+    <h2 class="section-title">
+      COLLECTION
+    </h2>
+
+
+    <div
+      class="product-grid"
+      id="product-grid"
+    >
+
+      <!-- 流浪 핑크 라이터 -->
+      <article class="product-card">
+
+        <button
+          class="product-image"
+          type="button"
+          onclick="openProductDetail()"
+        >
+
+          <img
+            src="images/AED2C668-95D1-4688-B695-084FE096312A.jpeg"
+            alt="流浪 핑크 라이터"
+          >
+
+        </button>
+
+
+        <div class="product-info">
+
+          <p class="product-category">
+            LIGHTER
+          </p>
+
+          <h3>
+            流浪 핑크 라이터
+          </h3>
+
+          <p class="product-price">
+            5,000원
+          </p>
+
+        </div>
+
+      </article>
+
+    </div>
+
   </main>
 
-  <footer>
-    <p>HYEONMONG · 永夢</p>
+
+  <!-- PRODUCT DETAIL -->
+  <div
+    class="modal-overlay"
+    id="detail-modal"
+  >
+
+    <div class="modal-content">
+
+      <button
+        class="close-btn"
+        id="close-detail"
+        type="button"
+      >
+        &times;
+      </button>
+
+
+      <div class="detail-body">
+
+        <img
+          id="detail-img"
+          src="images/AED2C668-95D1-4688-B695-084FE096312A.jpeg"
+          alt="流浪 핑크 라이터"
+        >
+
+
+        <div class="detail-info">
+
+          <p class="product-category">
+            HYEONMONG / LIGHTER
+          </p>
+
+          <h2 id="detail-title">
+            流浪 핑크 라이터
+          </h2>
+
+          <p
+            class="detail-price"
+            id="detail-price"
+          >
+            5,000원
+          </p>
+
+
+          <p
+            class="detail-desc"
+            id="detail-desc"
+          >
+            핑크 컬러의 라이터에
+            영몽의 감성을 담았습니다.
+            <br><br>
+
+            流浪 — 정해진 곳 없이
+            흘러가는 것.
+            <br><br>
+
+            작은 물건에도 하나의 이야기를
+            담아냅니다.
+          </p>
+
+
+          <button
+            class="primary-btn"
+            id="add-to-cart-btn"
+            type="button"
+          >
+            장바구니 담기
+          </button>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- CART -->
+  <div
+    class="modal-overlay"
+    id="cart-modal"
+  >
+
+    <div class="cart-content">
+
+      <div class="cart-header">
+
+        <div>
+
+          <p class="product-category">
+            HYEONMONG
+          </p>
+
+          <h2>
+            장바구니
+          </h2>
+
+        </div>
+
+
+        <button
+          class="close-btn"
+          id="close-cart"
+          type="button"
+        >
+          &times;
+        </button>
+
+      </div>
+
+
+      <div
+        class="cart-items"
+        id="cart-items"
+      >
+      </div>
+
+
+      <div class="cart-footer">
+
+        <div class="cart-total">
+
+          <span>
+            총 상품금액
+          </span>
+
+          <strong id="cart-total-price">
+            0원
+          </strong>
+
+        </div>
+
+
+        <button
+          class="primary-btn"
+          id="checkout-btn"
+          type="button"
+        >
+          주문하기
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- FOOTER -->
+  <footer class="footer">
+
+    <div class="footer-logo">
+      永夢
+    </div>
+
+    <p>
+      영원한 꿈을 담다.
+    </p>
+
+    <small>
+      © 2026 HYEONMONG
+    </small>
+
   </footer>
 
+
   <script src="script.js"></script>
+
 </body>
 </html>
