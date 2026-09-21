@@ -480,7 +480,7 @@ paymentBtn.onclick = async function () {
 
     // 테스트용 클라이언트 키
     const clientKey =
-      "test_gck_docs_Ovk5rk1EwkEbP0W43n07xlzm";
+      "test_ck_GjLJoQ1aVZKppNdYAdedrw6KYe2R";
 
 
     // 주문번호
