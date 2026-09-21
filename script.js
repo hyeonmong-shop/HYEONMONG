@@ -7,7 +7,7 @@ const products = [
     id: 1,
     name: "流浪 핑크 라이터",
     price: 5000,
-    image: "images/AED2C668-95D1-4688-B695-084FE096312A.jpeg",
+    image: "image: "AED2C668-95D1-4688-B695-084FE096312A.jpeg",
     desc: "동양적인 무드와 몽환적인 핑크빛을 담은 영몽(永夢)의 시그니처 流浪 라이터입니다."
   }
 ];
