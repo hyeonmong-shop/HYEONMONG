@@ -134,8 +134,9 @@ a {
 
 .hero h1 {
   width: 100%;
-
   text-align: center;
+
+  transform: translateX(8px);
 
   font-size: 40px;
   font-weight: 300;
