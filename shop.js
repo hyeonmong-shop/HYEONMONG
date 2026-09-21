@@ -1,6 +1,4 @@
 const TOSS_CLIENT_KEY = "test_gck_docs_Ovk5rk1EwkEbP0W43n07xlzm";
-console.log("HYEONMONG TOSS TEST");
-alert("새로운 JS가 실행되고 있습니다.");
 
 // ==============================
 // 永夢 HYEONMONG SHOP
