@@ -151,6 +151,9 @@ a {
   margin: 0 0 18px 0;
 
   padding: 0;
+
+  position: relative;
+  left: -5px;
 }
 
 .hero p {
@@ -657,6 +660,9 @@ a {
 
     margin-left: 0;
     margin-right: 0;
+
+    position: relative;
+    left: -5px;
   }
 
   .hero p {
