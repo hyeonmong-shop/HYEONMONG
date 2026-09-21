@@ -651,3 +651,34 @@ paymentBtn.addEventListener(
 renderProducts();
 
 updateCartUI();
+
+// ==============================
+// 주문하기 버튼 강제 연결
+// ==============================
+
+const orderButton = document.getElementById("checkout-btn");
+const orderWindow = document.getElementById("order-modal");
+const cartWindow = document.getElementById("cart-modal");
+const orderPrice = document.getElementById("order-total");
+
+orderButton.onclick = function () {
+
+  if (cart.length === 0) {
+    alert("장바구니가 비어 있습니다.");
+    return;
+  }
+
+  let total = 0;
+
+  cart.forEach(item => {
+    total += item.price * item.quantity;
+  });
+
+  orderPrice.innerText =
+    total.toLocaleString() + "원";
+
+  cartWindow.classList.remove("active");
+  orderWindow.classList.add("active");
+
+  document.body.style.overflow = "hidden";
+};
