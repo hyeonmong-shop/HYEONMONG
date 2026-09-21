@@ -1,229 +1,318 @@
-// ==============================
+// ==========================================
 // 永夢 HYEONMONG SHOP
 // shop.js
-// ==============================
+// ==========================================
 
-const TOSS_CLIENT_KEY = "test_gck_docs_Ovk5rk1EwkEbP0W43n07xlzm";
+const TOSS_CLIENT_KEY =
+  "test_gck_docs_Ovk5rk1EwkEbP0W43n07xlzm";
 
-// ==============================
-// 상품 정보
-// ==============================
+
+// ==========================================
+// 상품
+// ==========================================
 
 const products = [
   {
     id: 1,
-    name: "永夢 라이터",
-    category: "LIGHTER",
-    price: 6000,
-    image: "AED2C668-95D1-4688-B695-084FE096312A.jpeg",
+    name: "流浪 핑크 라이터",
+    category: "HYEONMONG / LIGHTER",
+    price: 5000,
+    image:
+      "AED2C668-95D1-4688-B695-084FE096312A.jpeg",
     description:
-      "永夢(영몽) — 영원한 꿈. 몽환적인 분위기를 담은 디자인 라이터입니다."
+      "핑크 컬러의 라이터에 영몽의 감성을 담았습니다."
   }
 ];
 
-// ==============================
+
+// ==========================================
 // 장바구니
-// ==============================
+// ==========================================
 
 let cart = [];
+
 let selectedProductId = null;
 
-// ==============================
-// DOM
-// ==============================
 
-const productGrid = document.getElementById("product-grid");
-
-const detailModal = document.getElementById("detail-modal");
-const detailImage = document.getElementById("detail-image");
-const detailCategory = document.getElementById("detail-category");
-const detailName = document.getElementById("detail-name");
-const detailPrice = document.getElementById("detail-price");
-const detailDesc = document.getElementById("detail-desc");
-const addCartBtn = document.getElementById("add-cart-btn");
-const closeDetailBtn = document.getElementById("close-detail");
-
-const cartModal = document.getElementById("cart-modal");
-const cartItems = document.getElementById("cart-items");
-const cartCount = document.getElementById("cart-count");
-const cartTotal = document.getElementById("cart-total");
-const cartBtn = document.getElementById("cart-btn");
-const closeCartBtn = document.getElementById("close-cart");
-const checkoutBtn = document.getElementById("checkout-btn");
-
-const orderModal = document.getElementById("order-modal");
-const closeOrderBtn = document.getElementById("close-order");
-const paymentBtn = document.getElementById("payment-btn");
-const orderTotal = document.getElementById("order-total");
-
-// ==============================
-// 상품 출력
-// ==============================
+// ==========================================
+// 상품 표시
+// ==========================================
 
 function renderProducts() {
-  if (!productGrid) return;
+
+  const productGrid =
+    document.getElementById("product-grid");
+
+  if (!productGrid) {
+    console.error("product-grid를 찾을 수 없습니다.");
+    return;
+  }
 
   productGrid.innerHTML = "";
 
   products.forEach(product => {
-    const card = document.createElement("article");
+
+    const card =
+      document.createElement("article");
+
     card.className = "product-card";
 
     card.innerHTML = `
+
       <button
         class="product-image"
         type="button"
-        aria-label="${product.name}"
       >
+
         <img
           src="${product.image}"
           alt="${product.name}"
         >
+
       </button>
 
       <div class="product-info">
+
         <div class="product-category">
           ${product.category}
         </div>
 
-        <h3>${product.name}</h3>
+        <h3>
+          ${product.name}
+        </h3>
 
         <div class="product-price">
           ${product.price.toLocaleString()}원
         </div>
+
       </div>
+
     `;
 
-    card.addEventListener("click", () => {
-      openDetail(product.id);
-    });
+    card.addEventListener(
+      "click",
+      function () {
+        openDetail(product.id);
+      }
+    );
 
     productGrid.appendChild(card);
+
   });
+
 }
 
-// ==============================
+
+// ==========================================
 // 상품 상세
-// ==============================
+// ==========================================
 
 function openDetail(productId) {
-  const product = products.find(item => item.id === productId);
 
-  if (!product || !detailModal) return;
+  const product =
+    products.find(
+      item => item.id === productId
+    );
+
+  const modal =
+    document.getElementById(
+      "detail-modal"
+    );
+
+  if (!product || !modal) return;
+
 
   selectedProductId = productId;
 
-  if (detailImage) {
-    detailImage.src = product.image;
-    detailImage.alt = product.name;
+
+  const image =
+    document.getElementById(
+      "detail-img"
+    );
+
+  const title =
+    document.getElementById(
+      "detail-title"
+    );
+
+  const price =
+    document.getElementById(
+      "detail-price"
+    );
+
+  const desc =
+    document.getElementById(
+      "detail-desc"
+    );
+
+
+  if (image) {
+    image.src = product.image;
+    image.alt = product.name;
   }
 
-  if (detailCategory) {
-    detailCategory.textContent = product.category;
+  if (title) {
+    title.textContent = product.name;
   }
 
-  if (detailName) {
-    detailName.textContent = product.name;
-  }
-
-  if (detailPrice) {
-    detailPrice.textContent =
+  if (price) {
+    price.textContent =
       `${product.price.toLocaleString()}원`;
   }
 
-  if (detailDesc) {
-    detailDesc.textContent = product.description;
+  if (desc) {
+    desc.textContent =
+      product.description;
   }
 
-  detailModal.classList.add("active");
-  document.body.style.overflow = "hidden";
+
+  modal.classList.add("active");
+
+  document.body.style.overflow =
+    "hidden";
+
 }
 
-function closeDetail() {
-  if (!detailModal) return;
 
-  detailModal.classList.remove("active");
-  document.body.style.overflow = "";
+// ==========================================
+// 상품 상세 닫기
+// ==========================================
+
+const closeDetail =
+  document.getElementById(
+    "close-detail"
+  );
+
+if (closeDetail) {
+
+  closeDetail.addEventListener(
+    "click",
+    function () {
+
+      const modal =
+        document.getElementById(
+          "detail-modal"
+        );
+
+      if (modal) {
+        modal.classList.remove(
+          "active"
+        );
+      }
+
+      document.body.style.overflow =
+        "";
+
+    }
+  );
+
 }
 
-if (closeDetailBtn) {
-  closeDetailBtn.addEventListener("click", closeDetail);
-}
 
-// ==============================
+// ==========================================
 // 장바구니 추가
-// ==============================
+// ==========================================
 
-function addToCart(productId) {
-  const product = products.find(item => item.id === productId);
-
-  if (!product) return;
-
-  const existingItem = cart.find(
-    item => item.id === productId
+const addToCart =
+  document.getElementById(
+    "add-to-cart-btn"
   );
 
-  if (existingItem) {
-    existingItem.quantity += 1;
-  } else {
-    cart.push({
-      id: product.id,
-      name: product.name,
-      price: product.price,
-      quantity: 1
-    });
-  }
+if (addToCart) {
 
-  updateCart();
-}
+  addToCart.addEventListener(
+    "click",
+    function () {
 
-// 상세페이지 → 장바구니
+      if (
+        selectedProductId === null
+      ) {
+        return;
+      }
 
-if (addCartBtn) {
-  addCartBtn.addEventListener("click", () => {
-    if (selectedProductId === null) return;
 
-    addToCart(selectedProductId);
+      const product =
+        products.find(
+          item =>
+            item.id ===
+            selectedProductId
+        );
 
-    closeDetail();
-    openCart();
-  });
-}
+      if (!product) return;
 
-// ==============================
-// 장바구니 수량 변경
-// ==============================
 
-function changeQuantity(productId, amount) {
-  const item = cart.find(
-    product => product.id === productId
+      const existing =
+        cart.find(
+          item =>
+            item.id ===
+            product.id
+        );
+
+
+      if (existing) {
+
+        existing.quantity += 1;
+
+      } else {
+
+        cart.push({
+
+          id: product.id,
+
+          name: product.name,
+
+          price: product.price,
+
+          quantity: 1
+
+        });
+
+      }
+
+
+      updateCart();
+
+
+      const detailModal =
+        document.getElementById(
+          "detail-modal"
+        );
+
+      if (detailModal) {
+
+        detailModal.classList.remove(
+          "active"
+        );
+
+      }
+
+
+      openCart();
+
+    }
   );
 
-  if (!item) return;
-
-  item.quantity += amount;
-
-  if (item.quantity <= 0) {
-    cart = cart.filter(
-      product => product.id !== productId
-    );
-  }
-
-  updateCart();
 }
 
-// HTML의 onclick에서 사용할 수 있도록 등록
-window.changeQuantity = changeQuantity;
 
-// ==============================
-// 장바구니 출력
-// ==============================
+// ==========================================
+// 장바구니 표시
+// ==========================================
 
 function renderCart() {
-  if (!cartItems) return;
+
+  const cartBox =
+    document.getElementById(
+      "cart-items"
+    );
+
+  if (!cartBox) return;
+
 
   if (cart.length === 0) {
-    cartItems.innerHTML = `
+
+    cartBox.innerHTML = `
+
       <p
         style="
           text-align:center;
@@ -233,287 +322,512 @@ function renderCart() {
       >
         장바구니가 비어 있습니다.
       </p>
-    `;
 
-    if (checkoutBtn) {
-      checkoutBtn.disabled = true;
-    }
+    `;
 
     return;
   }
 
-  if (checkoutBtn) {
-    checkoutBtn.disabled = false;
-  }
 
-  cartItems.innerHTML = cart
-    .map(item => {
-      const itemTotal =
-        item.price * item.quantity;
+  cartBox.innerHTML =
+    cart.map(item => `
 
-      return `
-        <div class="cart-item">
+      <div class="cart-item">
 
-          <div class="cart-item-info">
-            <h4>${item.name}</h4>
+        <div class="cart-item-info">
 
-            <p>
-              ${itemTotal.toLocaleString()}원
-            </p>
-          </div>
+          <h4>
+            ${item.name}
+          </h4>
 
-          <div class="cart-item-qty">
-
-            <button
-              type="button"
-              onclick="changeQuantity(${item.id}, -1)"
-            >
-              −
-            </button>
-
-            <span>
-              ${item.quantity}
-            </span>
-
-            <button
-              type="button"
-              onclick="changeQuantity(${item.id}, 1)"
-            >
-              +
-            </button>
-
-          </div>
+          <p>
+            ${(item.price * item.quantity)
+              .toLocaleString()}원
+          </p>
 
         </div>
-      `;
-    })
-    .join("");
+
+
+        <div class="cart-item-qty">
+
+          <button
+            type="button"
+            onclick="
+              changeQuantity(${item.id}, -1)
+            "
+          >
+            −
+          </button>
+
+
+          <span>
+            ${item.quantity}
+          </span>
+
+
+          <button
+            type="button"
+            onclick="
+              changeQuantity(${item.id}, 1)
+            "
+          >
+            +
+          </button>
+
+        </div>
+
+      </div>
+
+    `).join("");
+
 }
 
-// ==============================
-// 장바구니 전체 업데이트
-// ==============================
 
-function updateCart() {
-  const count = cart.reduce(
-    (sum, item) => sum + item.quantity,
-    0
-  );
+// ==========================================
+// 수량 변경
+// ==========================================
 
-  const total = cart.reduce(
-    (sum, item) =>
-      sum + item.price * item.quantity,
-    0
-  );
+function changeQuantity(
+  productId,
+  amount
+) {
 
-  if (cartCount) {
-    cartCount.textContent = count;
+  const item =
+    cart.find(
+      product =>
+        product.id === productId
+    );
+
+  if (!item) return;
+
+
+  item.quantity += amount;
+
+
+  if (item.quantity <= 0) {
+
+    cart =
+      cart.filter(
+        product =>
+          product.id !== productId
+      );
+
   }
 
-  if (cartTotal) {
-    cartTotal.textContent =
-      `${total.toLocaleString()}원`;
-  }
-
-  renderCart();
-}
-
-// ==============================
-// 장바구니 열기 / 닫기
-// ==============================
-
-function openCart() {
-  if (!cartModal) return;
 
   updateCart();
 
-  cartModal.classList.add("active");
-  document.body.style.overflow = "hidden";
 }
 
-function closeCart() {
-  if (!cartModal) return;
 
-  cartModal.classList.remove("active");
-  document.body.style.overflow = "";
-}
+window.changeQuantity =
+  changeQuantity;
 
-if (cartBtn) {
-  cartBtn.addEventListener("click", openCart);
-}
 
-if (closeCartBtn) {
-  closeCartBtn.addEventListener("click", closeCart);
-}
+// ==========================================
+// 장바구니 업데이트
+// ==========================================
 
-// ==============================
-// 주문서 열기
-// ==============================
+function updateCart() {
 
-function openOrder() {
-  if (!orderModal) return;
+  const count =
+    cart.reduce(
+      (sum, item) =>
+        sum + item.quantity,
+      0
+    );
 
-  if (cart.length === 0) {
-    alert("장바구니가 비어 있습니다.");
-    return;
+
+  const total =
+    cart.reduce(
+      (sum, item) =>
+        sum +
+        item.price *
+        item.quantity,
+      0
+    );
+
+
+  const countElement =
+    document.getElementById(
+      "cart-count"
+    );
+
+  const totalElement =
+    document.getElementById(
+      "cart-total-price"
+    );
+
+
+  if (countElement) {
+
+    countElement.textContent =
+      count;
+
   }
 
-  const total = cart.reduce(
-    (sum, item) =>
-      sum + item.price * item.quantity,
-    0
-  );
 
-  if (orderTotal) {
-    orderTotal.textContent =
+  if (totalElement) {
+
+    totalElement.textContent =
       `${total.toLocaleString()}원`;
+
   }
 
-  orderModal.classList.add("active");
-  document.body.style.overflow = "hidden";
+
+  renderCart();
+
 }
 
-if (checkoutBtn) {
-  checkoutBtn.addEventListener(
-    "click",
-    openOrder
+
+// ==========================================
+// 장바구니 열기
+// ==========================================
+
+function openCart() {
+
+  const modal =
+    document.getElementById(
+      "cart-modal"
+    );
+
+  if (!modal) return;
+
+
+  updateCart();
+
+
+  modal.classList.add("active");
+
+  document.body.style.overflow =
+    "hidden";
+
+}
+
+
+// ==========================================
+// 장바구니 닫기
+// ==========================================
+
+const openCartButton =
+  document.getElementById(
+    "open-cart"
   );
-}
 
-// ==============================
-// 주문서 닫기
-// ==============================
+if (openCartButton) {
 
-function closeOrder() {
-  if (!orderModal) return;
-
-  orderModal.classList.remove("active");
-  document.body.style.overflow = "";
-}
-
-if (closeOrderBtn) {
-  closeOrderBtn.addEventListener(
+  openCartButton.addEventListener(
     "click",
-    closeOrder
+    openCart
   );
+
 }
 
-// ==============================
-// Toss Payments 결제
-// ==============================
 
-if (paymentBtn) {
-  paymentBtn.addEventListener(
+const closeCart =
+  document.getElementById(
+    "close-cart"
+  );
+
+if (closeCart) {
+
+  closeCart.addEventListener(
     "click",
-    async () => {
+    function () {
+
+      const modal =
+        document.getElementById(
+          "cart-modal"
+        );
+
+      if (modal) {
+
+        modal.classList.remove(
+          "active"
+        );
+
+      }
+
+      document.body.style.overflow =
+        "";
+
+    }
+  );
+
+}
+
+
+// ==========================================
+// 주문하기
+// ==========================================
+
+const checkoutButton =
+  document.getElementById(
+    "checkout-btn"
+  );
+
+if (checkoutButton) {
+
+  checkoutButton.addEventListener(
+    "click",
+    function () {
+
+      if (cart.length === 0) {
+
+        alert(
+          "장바구니가 비어 있습니다."
+        );
+
+        return;
+      }
+
+
+      const total =
+        cart.reduce(
+          (sum, item) =>
+            sum +
+            item.price *
+            item.quantity,
+          0
+        );
+
+
+      const orderTotal =
+        document.getElementById(
+          "order-total"
+        );
+
+
+      if (orderTotal) {
+
+        orderTotal.textContent =
+          `${total.toLocaleString()}원`;
+
+      }
+
+
+      const cartModal =
+        document.getElementById(
+          "cart-modal"
+        );
+
+
+      if (cartModal) {
+
+        cartModal.classList.remove(
+          "active"
+        );
+
+      }
+
+
+      const orderModal =
+        document.getElementById(
+          "order-modal"
+        );
+
+
+      if (orderModal) {
+
+        orderModal.classList.add(
+          "active"
+        );
+
+      }
+
+    }
+  );
+
+}
+
+
+// ==========================================
+// 주문창 닫기
+// ==========================================
+
+const closeOrder =
+  document.getElementById(
+    "close-order"
+  );
+
+if (closeOrder) {
+
+  closeOrder.addEventListener(
+    "click",
+    function () {
+
+      const modal =
+        document.getElementById(
+          "order-modal"
+        );
+
+      if (modal) {
+
+        modal.classList.remove(
+          "active"
+        );
+
+      }
+
+      document.body.style.overflow =
+        "";
+
+    }
+  );
+
+}
+
+
+// ==========================================
+// Toss Payments
+// ==========================================
+
+const paymentButton =
+  document.getElementById(
+    "payment-btn"
+  );
+
+
+if (paymentButton) {
+
+  paymentButton.addEventListener(
+    "click",
+    async function () {
 
       try {
 
-        // 장바구니 확인
         if (cart.length === 0) {
-          alert("장바구니가 비어 있습니다.");
+
+          alert(
+            "장바구니가 비어 있습니다."
+          );
+
           return;
         }
 
-        // 주문자 정보
+
         const nameInput =
-          document.getElementById("order-name");
+          document.getElementById(
+            "order-name"
+          );
+
 
         const phoneInput =
-          document.getElementById("order-phone");
+          document.getElementById(
+            "order-phone"
+          );
+
 
         const addressInput =
-          document.getElementById("order-address");
+          document.getElementById(
+            "order-address"
+          );
+
 
         const name =
           nameInput
             ? nameInput.value.trim()
             : "";
 
+
         const phone =
           phoneInput
             ? phoneInput.value.trim()
             : "";
+
 
         const address =
           addressInput
             ? addressInput.value.trim()
             : "";
 
-        // 이름
+
         if (!name) {
-          alert("이름을 입력해주세요.");
 
-          if (nameInput) {
-            nameInput.focus();
-          }
+          alert(
+            "이름을 입력해주세요."
+          );
+
+          nameInput?.focus();
 
           return;
         }
 
-        // 연락처
+
         if (!phone) {
-          alert("연락처를 입력해주세요.");
 
-          if (phoneInput) {
-            phoneInput.focus();
-          }
+          alert(
+            "연락처를 입력해주세요."
+          );
+
+          phoneInput?.focus();
 
           return;
         }
 
-        // 배송지
+
         if (!address) {
-          alert("배송지를 입력해주세요.");
 
-          if (addressInput) {
-            addressInput.focus();
-          }
+          alert(
+            "배송지를 입력해주세요."
+          );
+
+          addressInput?.focus();
 
           return;
         }
 
-        // Toss SDK 확인
+
         if (
           typeof TossPayments !==
           "function"
         ) {
+
           alert(
-            "결제 모듈을 불러오지 못했습니다.\n" +
-            "페이지를 새로고침한 뒤 다시 시도해주세요."
+            "결제 모듈을 불러오지 못했습니다."
           );
 
           return;
         }
 
-        // 총 결제금액
-        const total = cart.reduce(
-          (sum, item) =>
-            sum + item.price * item.quantity,
-          0
-        );
 
-        // 주문번호
+        const total =
+          cart.reduce(
+            (sum, item) =>
+              sum +
+              item.price *
+              item.quantity,
+            0
+          );
+
+
         const orderId =
           "HYEONMONG_" +
           crypto
             .randomUUID()
-            .replace(/-/g, "")
+            .replace(
+              /-/g,
+              ""
+            )
             .slice(0, 32);
 
-        // 고객키
+
         const customerKey =
           "HYEONMONG_" +
           crypto
             .randomUUID()
-            .replace(/-/g, "")
+            .replace(
+              /-/g,
+              ""
+            )
             .slice(0, 32);
 
-        // Toss Payments
+
         const tossPayments =
           TossPayments(
             TOSS_CLIENT_KEY
           );
+
 
         const payment =
           tossPayments.payment({
@@ -521,32 +835,35 @@ if (paymentBtn) {
               customerKey
           });
 
-        // 주문명
-        let orderName;
 
-        if (cart.length === 1) {
-          orderName =
-            cart[0].name;
-        } else {
-          orderName =
-            `${cart[0].name} 외 ${cart.length - 1}건`;
-        }
+        const orderName =
+          cart.length === 1
+            ? cart[0].name
+            : `${cart[0].name} 외 ${
+                cart.length - 1
+              }건`;
 
-        // 결제창 호출
+
         await payment.requestPayment({
 
           method: "CARD",
 
           amount: {
+
             currency: "KRW",
+
             value: total
+
           },
 
-          orderId: orderId,
+          orderId:
+            orderId,
 
-          orderName: orderName,
+          orderName:
+            orderName,
 
-          customerName: name,
+          customerName:
+            name,
 
           customerMobilePhone:
             phone.replace(
@@ -571,6 +888,7 @@ if (paymentBtn) {
           error
         );
 
+
         alert(
           "결제창을 여는 중 문제가 발생했습니다.\n\n" +
           (
@@ -578,43 +896,60 @@ if (paymentBtn) {
             "알 수 없는 오류"
           )
         );
+
       }
+
     }
   );
+
 }
 
-// ==============================
+
+// ==========================================
 // 모달 바깥 클릭
-// ==============================
+// ==========================================
 
-[detailModal, cartModal, orderModal]
-  .forEach(modal => {
+[
+  "detail-modal",
+  "cart-modal",
+  "order-modal"
+].forEach(id => {
 
-    if (!modal) return;
+  const modal =
+    document.getElementById(id);
 
-    modal.addEventListener(
-      "click",
-      event => {
+  if (!modal) return;
 
-        if (
-          event.target !== modal
-        ) {
-          return;
-        }
 
-        modal.classList.remove(
-          "active"
-        );
+  modal.addEventListener(
+    "click",
+    function (event) {
 
-        document.body.style.overflow =
-          "";
+      if (
+        event.target !== modal
+      ) {
+        return;
       }
-    );
-  });
 
-// ==============================
+
+      modal.classList.remove(
+        "active"
+      );
+
+
+      document.body.style.overflow =
+        "";
+
+    }
+  );
+
+});
+
+
+// ==========================================
 // 시작
-// ==============================
+// ==========================================
 
 renderProducts();
+
 updateCart();
