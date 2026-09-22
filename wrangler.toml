@@ -1,6 +1,4 @@
-name = "hyeonmong"
-compatibility_date = "2026-09-22"
-
 [[d1_databases]]
 binding = "DB"
 database_name = "hyeonmong-orders"
+database_id = "9413d0b1-cca0-488b-970d-6fd6bd6ecade"
