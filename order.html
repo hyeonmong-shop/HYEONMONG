@@ -2,7 +2,6 @@
 <html lang="ko">
 
 <head>
-
   <meta charset="UTF-8">
 
   <meta
@@ -12,18 +11,14 @@
 
   <title>永夢 | 주문조회</title>
 
-
   <style>
-
     * {
       box-sizing: border-box;
     }
 
-
     body {
       margin: 0;
       min-height: 100vh;
-
       background: #fff7fa;
 
       font-family:
@@ -35,7 +30,6 @@
       color: #333;
     }
 
-
     .container {
       width: calc(100% - 40px);
       max-width: 430px;
@@ -44,32 +38,23 @@
       padding: 55px 0;
     }
 
-
     .logo {
       text-align: center;
-
       font-size: 30px;
       letter-spacing: 5px;
-
       margin-bottom: 10px;
     }
 
-
     .subtitle {
       text-align: center;
-
       color: #999;
       font-size: 14px;
-
       margin-bottom: 35px;
     }
 
-
     .box {
       background: white;
-
       border: 1px solid #f0dce3;
-
       border-radius: 18px;
 
       padding: 25px;
@@ -79,20 +64,16 @@
         rgba(0, 0, 0, 0.04);
     }
 
-
     label {
       display: block;
-
       margin-bottom: 7px;
 
       font-size: 13px;
       color: #777;
     }
 
-
     input {
       width: 100%;
-
       height: 48px;
 
       padding: 0 14px;
@@ -109,35 +90,32 @@
       margin-bottom: 18px;
     }
 
-
     input:focus {
       border-color: #d9a8b8;
     }
 
-
     button {
       width: 100%;
-
       height: 50px;
 
       border: none;
-
       border-radius: 10px;
 
       background: #333;
-
       color: white;
 
       font-size: 15px;
-
       cursor: pointer;
     }
-
 
     button:active {
       opacity: 0.8;
     }
 
+    button:disabled {
+      opacity: 0.6;
+      cursor: default;
+    }
 
     .error {
       margin-top: 15px;
@@ -149,37 +127,27 @@
       font-size: 13px;
     }
 
-
     #result {
       display: none;
-
       margin-top: 25px;
     }
 
-
     .result-title {
       font-size: 18px;
-
       font-weight: 600;
-
       margin-bottom: 18px;
     }
 
-
     .info {
       background: #fff7fa;
-
       border-radius: 12px;
 
       padding: 17px;
-
       margin-bottom: 15px;
     }
 
-
     .row {
       display: flex;
-
       justify-content: space-between;
 
       gap: 15px;
@@ -189,13 +157,10 @@
       font-size: 14px;
     }
 
-
     .label {
       color: #888;
-
       white-space: nowrap;
     }
-
 
     .value {
       text-align: right;
@@ -205,7 +170,6 @@
       word-break: break-all;
     }
 
-
     .items {
       margin-top: 15px;
 
@@ -214,7 +178,6 @@
       border-top:
         1px solid #f0dce3;
     }
-
 
     .item {
       display: flex;
@@ -228,7 +191,6 @@
       font-size: 14px;
     }
 
-
     .shipping {
       margin-top: 15px;
 
@@ -240,7 +202,6 @@
       border-radius: 12px;
     }
 
-
     .shipping-title {
       font-size: 15px;
 
@@ -248,7 +209,6 @@
 
       margin-bottom: 10px;
     }
-
 
     .tracking {
       margin-top: 12px;
@@ -264,19 +224,57 @@
       word-break: break-all;
     }
 
+    .refresh-button {
+      margin-top: 10px;
 
-    .tracking-button {
-      margin-top: 12px;
-
-      background: #f3dce4;
-
-      color: #333;
+      background: #333;
 
       height: 44px;
 
       font-size: 14px;
     }
 
+    .tracking-message {
+      margin-top: 12px;
+
+      padding: 12px;
+
+      background: white;
+
+      border-radius: 8px;
+
+      color: #777;
+
+      font-size: 13px;
+
+      line-height: 1.6;
+    }
+
+    .event {
+      margin-top: 12px;
+
+      padding: 13px;
+
+      background: white;
+
+      border-radius: 8px;
+
+      font-size: 13px;
+
+      line-height: 1.6;
+    }
+
+    .event-title {
+      font-weight: 600;
+
+      margin-bottom: 4px;
+    }
+
+    .event-meta {
+      color: #999;
+
+      font-size: 12px;
+    }
 
     .notice {
       margin-top: 20px;
@@ -289,7 +287,6 @@
 
       line-height: 1.6;
     }
-
   </style>
 
 </head>
@@ -297,14 +294,11 @@
 
 <body>
 
-
   <main class="container">
-
 
     <div class="logo">
       永夢
     </div>
-
 
     <div class="subtitle">
       주문조회
@@ -313,11 +307,9 @@
 
     <div class="box">
 
-
       <label for="order-id">
         주문번호
       </label>
-
 
       <input
         id="order-id"
@@ -329,7 +321,6 @@
       <label for="phone">
         주문자 전화번호
       </label>
-
 
       <input
         id="phone"
@@ -352,10 +343,7 @@
       ></div>
 
 
-      <div
-        id="result"
-      >
-
+      <div id="result">
 
         <div class="result-title">
           주문 정보
@@ -363,7 +351,6 @@
 
 
         <div class="info">
-
 
           <div class="row">
 
@@ -423,18 +410,14 @@
 
           <div class="items">
 
-            <div
-              id="result-items"
-            ></div>
+            <div id="result-items"></div>
 
           </div>
-
 
         </div>
 
 
         <div class="shipping">
-
 
           <div class="shipping-title">
             배송정보
@@ -458,24 +441,27 @@
 
 
           <div
-            id="tracking-area"
+            class="row"
+            id="carrier-row"
             style="display:none;"
           >
 
+            <span class="label">
+              택배사
+            </span>
 
-            <div class="row">
+            <span
+              id="carrier"
+              class="value"
+            ></span>
 
-              <span class="label">
-                택배사
-              </span>
+          </div>
 
-              <span
-                id="carrier"
-                class="value"
-              ></span>
 
-            </div>
-
+          <div
+            id="tracking-area"
+            style="display:none;"
+          >
 
             <div class="tracking">
 
@@ -488,43 +474,77 @@
             </div>
 
 
+            <div
+              id="tracking-message"
+              class="tracking-message"
+              style="display:none;"
+            ></div>
+
+
+            <div
+              id="latest-event"
+              class="event"
+              style="display:none;"
+            >
+
+              <div class="event-title">
+                최근 배송정보
+              </div>
+
+              <div id="event-status"></div>
+
+              <div
+                id="event-location"
+                class="event-meta"
+              ></div>
+
+              <div
+                id="event-time"
+                class="event-meta"
+              ></div>
+
+            </div>
+
+
             <button
-              id="tracking-button"
-              class="tracking-button"
+              id="refresh-tracking-button"
+              class="refresh-button"
               type="button"
             >
-              배송조회
+              배송상태 새로고침
             </button>
 
-
           </div>
-
 
         </div>
 
 
         <div class="notice">
-
-          배송정보는 송장 등록 후 표시됩니다.
-
+          배송상태는 조회할 때마다 택배사 정보로 업데이트됩니다.
         </div>
-
 
       </div>
 
-
     </div>
-
 
   </main>
 
 
   <script>
 
+    const WORKER_URL =
+      "https://hyeonmong.hyoeunan240.workers.dev";
+
 
     const lookupButton =
       document.getElementById(
         "lookup-button"
+      );
+
+
+    const refreshTrackingButton =
+      document.getElementById(
+        "refresh-tracking-button"
       );
 
 
@@ -546,20 +566,37 @@
       );
 
 
-    const trackingButton =
+    const carrierRow =
       document.getElementById(
-        "tracking-button"
+        "carrier-row"
       );
 
 
-    let currentCarrier = "";
+    const trackingMessage =
+      document.getElementById(
+        "tracking-message"
+      );
+
+
+    const latestEvent =
+      document.getElementById(
+        "latest-event"
+      );
+
+
+    let currentOrderId = "";
+
+    let currentPhone = "";
 
     let currentTrackingNumber = "";
 
 
-    lookupButton.onclick =
-      async function () {
+    // =========================
+    // 주문 조회
+    // =========================
 
+    lookupButton.onclick =
+      async function() {
 
         error.textContent = "";
 
@@ -601,6 +638,13 @@
         }
 
 
+        currentOrderId =
+          orderId;
+
+        currentPhone =
+          phone;
+
+
         lookupButton.disabled =
           true;
 
@@ -610,10 +654,10 @@
 
         try {
 
-
           const response =
             await fetch(
-              "https://hyeonmong.hyoeunan240.workers.dev/api/orders/lookup",
+              WORKER_URL +
+              "/api/orders/lookup",
               {
                 method: "POST",
 
@@ -622,16 +666,14 @@
                     "application/json"
                 },
 
-                body: JSON.stringify({
+                body:
+                  JSON.stringify({
+                    orderId:
+                      orderId,
 
-                  orderId:
-                    orderId,
-
-                  phone:
-                    phone
-
-                })
-
+                    phone:
+                      phone
+                  })
               }
             );
 
@@ -687,13 +729,6 @@
               : order.status;
 
 
-          document.getElementById(
-            "delivery-status"
-          ).textContent =
-            order.deliveryStatus ||
-            "상품준비중";
-
-
           const items =
             document.getElementById(
               "result-items"
@@ -710,7 +745,6 @@
             order.items.forEach(
               function(item) {
 
-
                 const div =
                   document.createElement(
                     "div"
@@ -721,28 +755,45 @@
                   "item";
 
 
-                div.innerHTML =
-                  `
-                    <span>
-                      ${item.name}
-                      × ${item.quantity}
-                    </span>
+                const nameSpan =
+                  document.createElement(
+                    "span"
+                  );
 
-                    <span>
-                      ${(
-                        item.price *
-                        item.quantity
-                      ).toLocaleString(
-                        "ko-KR"
-                      )}원
-                    </span>
-                  `;
+
+                nameSpan.textContent =
+                  item.name +
+                  " × " +
+                  item.quantity;
+
+
+                const priceSpan =
+                  document.createElement(
+                    "span"
+                  );
+
+
+                priceSpan.textContent =
+                  (
+                    item.price *
+                    item.quantity
+                  ).toLocaleString(
+                    "ko-KR"
+                  ) + "원";
+
+
+                div.appendChild(
+                  nameSpan
+                );
+
+                div.appendChild(
+                  priceSpan
+                );
 
 
                 items.appendChild(
                   div
                 );
-
 
               }
             );
@@ -750,18 +801,24 @@
           }
 
 
-          currentCarrier =
-            order.carrier || "";
-
-
           currentTrackingNumber =
             order.trackingNumber || "";
 
 
+          document.getElementById(
+            "delivery-status"
+          ).textContent =
+            order.deliveryStatus ||
+            "상품준비중";
+
+
           if (
-            currentCarrier &&
+            order.carrier &&
             currentTrackingNumber
           ) {
+
+            carrierRow.style.display =
+              "flex";
 
 
             trackingArea.style.display =
@@ -771,7 +828,7 @@
             document.getElementById(
               "carrier"
             ).textContent =
-              currentCarrier;
+              order.carrier;
 
 
             document.getElementById(
@@ -780,12 +837,24 @@
               currentTrackingNumber;
 
 
+            trackingMessage.style.display =
+              "none";
+
+
+            latestEvent.style.display =
+              "none";
+
+
+            await refreshTracking();
+
           } else {
+
+            carrierRow.style.display =
+              "none";
 
 
             trackingArea.style.display =
               "none";
-
 
           }
 
@@ -796,126 +865,280 @@
 
         } catch (e) {
 
-
           error.textContent =
             e.message ||
             "주문 조회 중 오류가 발생했습니다.";
 
-
         } finally {
-
 
           lookupButton.disabled =
             false;
 
+
           lookupButton.textContent =
             "주문 조회";
 
-
         }
 
       };
 
 
-    /*
-      =========================
-      택배사별 배송조회
-      =========================
-    */
+    // =========================
+    // 실시간 배송상태 조회
+    // =========================
 
-    trackingButton.onclick =
+    async function refreshTracking() {
+
+      if (
+        !currentOrderId ||
+        !currentPhone ||
+        !currentTrackingNumber
+      ) {
+
+        return;
+
+      }
+
+
+      refreshTrackingButton.disabled =
+        true;
+
+
+      refreshTrackingButton.textContent =
+        "배송상태 확인 중...";
+
+
+      trackingMessage.style.display =
+        "none";
+
+
+      latestEvent.style.display =
+        "none";
+
+
+      try {
+
+        const response =
+          await fetch(
+            WORKER_URL +
+            "/api/orders/tracking",
+            {
+              method: "POST",
+
+              headers: {
+                "Content-Type":
+                  "application/json"
+              },
+
+              body:
+                JSON.stringify({
+
+                  orderId:
+                    currentOrderId,
+
+                  phone:
+                    currentPhone
+
+                })
+
+            }
+          );
+
+
+        const data =
+          await response.json();
+
+
+        if (
+          !response.ok ||
+          !data.ok
+        ) {
+
+          throw new Error(
+            data.message ||
+            "배송정보를 불러오지 못했습니다."
+          );
+
+        }
+
+
+        if (
+          data.trackingRegistered ===
+          false
+        ) {
+
+          document.getElementById(
+            "delivery-status"
+          ).textContent =
+            data.deliveryStatus ||
+            "상품준비중";
+
+
+          return;
+
+        }
+
+
+        document.getElementById(
+          "delivery-status"
+        ).textContent =
+          data.deliveryStatus ||
+          "확인 불가";
+
+
+        if (
+          data.carrier
+        ) {
+
+          document.getElementById(
+            "carrier"
+          ).textContent =
+            data.carrier;
+
+        }
+
+
+        if (
+          data.trackingNumber
+        ) {
+
+          currentTrackingNumber =
+            data.trackingNumber;
+
+
+          document.getElementById(
+            "tracking-number"
+          ).textContent =
+            data.trackingNumber;
+
+        }
+
+
+        if (
+          data.lastEvent
+        ) {
+
+          latestEvent.style.display =
+            "block";
+
+
+          document.getElementById(
+            "event-status"
+          ).textContent =
+            data.lastEvent.statusText ||
+            data.deliveryStatus ||
+            "";
+
+
+          document.getElementById(
+            "event-location"
+          ).textContent =
+            data.lastEvent.location
+              ? "위치: " +
+                data.lastEvent.location
+              : "";
+
+
+          document.getElementById(
+            "event-time"
+          ).textContent =
+            data.lastEvent.occurredAt
+              ? "시간: " +
+                formatDate(
+                  data.lastEvent.occurredAt
+                )
+              : "";
+
+        }
+
+
+        if (
+          data.message
+        ) {
+
+          trackingMessage.style.display =
+            "block";
+
+
+          trackingMessage.textContent =
+            data.message;
+
+        }
+
+
+      } catch (e) {
+
+        trackingMessage.style.display =
+          "block";
+
+
+        trackingMessage.textContent =
+          e.message ||
+          "배송정보를 불러오지 못했습니다.";
+
+      } finally {
+
+        refreshTrackingButton.disabled =
+          false;
+
+
+        refreshTrackingButton.textContent =
+          "배송상태 새로고침";
+
+      }
+
+    }
+
+
+    // =========================
+    // 배송상태 새로고침 버튼
+    // =========================
+
+    refreshTrackingButton.onclick =
       function() {
 
-
-        if (!currentTrackingNumber) {
-          return;
-        }
-
-
-        let url = "";
-
-
-        switch (currentCarrier) {
-
-
-          case "CJ대한통운":
-
-            url =
-              "https://www.cjlogistics.com/ko/tool/parcel/tracking";
-
-            break;
-
-
-          case "한진택배":
-
-            url =
-              "https://www.hanjin.com/kor/CMS/DeliveryMgr/WaybillSch.do?mCode=MN038";
-
-            break;
-
-
-          case "롯데택배":
-
-            url =
-              "https://www.lotteglogis.com/home/reservation/tracking/linkView";
-
-            break;
-
-
-          case "우체국택배":
-
-            url =
-              "https://service.epost.go.kr/trace.RetrieveEmsTraceList.comm";
-
-            break;
-
-
-          case "CU 편의점택배":
-
-            url =
-              "https://www.cupost.co.kr/postbox/partnership/deliveryCheck.cupost";
-
-            break;
-
-
-          case "GS25 편의점택배":
-
-            url =
-              "https://www.cvsnet.co.kr/main/index.do";
-
-            break;
-
-
-          case "로젠택배":
-
-            url =
-              "https://www.ilogen.com/web/personal/trace";
-
-            break;
-
-
-          default:
-
-            url =
-              "https://www.google.com/search?q=" +
-              encodeURIComponent(
-                currentTrackingNumber +
-                " 배송조회"
-              );
-
-        }
-
-
-        window.open(
-          url,
-          "_blank"
-        );
+        refreshTracking();
 
       };
 
 
-  </script>
+    // =========================
+    // 날짜 표시
+    // =========================
 
+    function formatDate(
+      value
+    ) {
+
+      const date =
+        new Date(value);
+
+
+      if (
+        Number.isNaN(
+          date.getTime()
+        )
+      ) {
+
+        return value;
+
+      }
+
+
+      return date.toLocaleString(
+        "ko-KR",
+        {
+          year: "numeric",
+          month: "2-digit",
+          day: "2-digit",
+          hour: "2-digit",
+          minute: "2-digit"
+        }
+      );
+
+    }
+
+  </script>
 
 </body>
 
