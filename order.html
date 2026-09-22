@@ -340,6 +340,7 @@
 
       <button
         id="lookup-button"
+        type="button"
       >
         주문 조회
       </button>
@@ -490,6 +491,7 @@
             <button
               id="tracking-button"
               class="tracking-button"
+              type="button"
             >
               배송조회
             </button>
@@ -551,6 +553,7 @@
 
 
     let currentCarrier = "";
+
     let currentTrackingNumber = "";
 
 
@@ -584,6 +587,7 @@
             "주문번호를 입력해주세요.";
 
           return;
+
         }
 
 
@@ -593,6 +597,7 @@
             "전화번호를 입력해주세요.";
 
           return;
+
         }
 
 
@@ -618,12 +623,15 @@
                 },
 
                 body: JSON.stringify({
+
                   orderId:
                     orderId,
 
                   phone:
                     phone
+
                 })
+
               }
             );
 
@@ -641,6 +649,7 @@
               data.message ||
               "주문을 찾을 수 없습니다."
             );
+
           }
 
 
@@ -701,10 +710,12 @@
             order.items.forEach(
               function(item) {
 
+
                 const div =
                   document.createElement(
                     "div"
                   );
+
 
                 div.className =
                   "item";
@@ -728,7 +739,10 @@
                   `;
 
 
-                items.appendChild(div);
+                items.appendChild(
+                  div
+                );
+
 
               }
             );
@@ -749,6 +763,7 @@
             currentTrackingNumber
           ) {
 
+
             trackingArea.style.display =
               "block";
 
@@ -764,10 +779,13 @@
             ).textContent =
               currentTrackingNumber;
 
+
           } else {
+
 
             trackingArea.style.display =
               "none";
+
 
           }
 
@@ -778,11 +796,14 @@
 
         } catch (e) {
 
+
           error.textContent =
             e.message ||
             "주문 조회 중 오류가 발생했습니다.";
 
+
         } finally {
+
 
           lookupButton.disabled =
             false;
@@ -790,32 +811,99 @@
           lookupButton.textContent =
             "주문 조회";
 
+
         }
 
       };
 
 
+    /*
+      =========================
+      택배사별 배송조회
+      =========================
+    */
+
     trackingButton.onclick =
       function() {
 
 
-        if (
-          !currentTrackingNumber
-        ) {
+        if (!currentTrackingNumber) {
           return;
         }
 
 
-        const encoded =
-          encodeURIComponent(
-            currentTrackingNumber
-          );
+        let url = "";
 
 
-        let url =
-          "https://www.google.com/search?q=" +
-          encoded +
-          "+배송조회";
+        switch (currentCarrier) {
+
+
+          case "CJ대한통운":
+
+            url =
+              "https://www.cjlogistics.com/ko/tool/parcel/tracking";
+
+            break;
+
+
+          case "한진택배":
+
+            url =
+              "https://www.hanjin.com/kor/CMS/DeliveryMgr/WaybillSch.do?mCode=MN038";
+
+            break;
+
+
+          case "롯데택배":
+
+            url =
+              "https://www.lotteglogis.com/home/reservation/tracking/linkView";
+
+            break;
+
+
+          case "우체국택배":
+
+            url =
+              "https://service.epost.go.kr/trace.RetrieveEmsTraceList.comm";
+
+            break;
+
+
+          case "CU 편의점택배":
+
+            url =
+              "https://www.cupost.co.kr/postbox/partnership/deliveryCheck.cupost";
+
+            break;
+
+
+          case "GS25 편의점택배":
+
+            url =
+              "https://www.cvsnet.co.kr/main/index.do";
+
+            break;
+
+
+          case "로젠택배":
+
+            url =
+              "https://www.ilogen.com/web/personal/trace";
+
+            break;
+
+
+          default:
+
+            url =
+              "https://www.google.com/search?q=" +
+              encodeURIComponent(
+                currentTrackingNumber +
+                " 배송조회"
+              );
+
+        }
 
 
         window.open(
