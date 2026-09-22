@@ -48,6 +48,224 @@ export default {
 
 
     // ==============================
+    // Toss 결제 승인
+    // ==============================
+
+    if (
+      url.pathname === "/api/payments/confirm" &&
+      request.method === "POST"
+    ) {
+
+      try {
+
+        const data =
+          await request.json();
+
+        const {
+          paymentKey,
+          orderId,
+          amount
+        } = data;
+
+
+        // 필수값 확인
+        if (
+          !paymentKey ||
+          !orderId ||
+          !amount
+        ) {
+
+          return new Response(
+            JSON.stringify({
+              ok: false,
+              message:
+                "결제 승인 정보가 없습니다."
+            }),
+            {
+              status: 400,
+
+              headers: {
+                "Content-Type":
+                  "application/json",
+
+                ...corsHeaders
+              }
+            }
+          );
+        }
+
+
+        // ==============================
+        // Toss Secret Key
+        // ==============================
+
+        const secretKey =
+          env.TOSS_SECRET_KEY;
+
+
+        if (!secretKey) {
+
+          return new Response(
+            JSON.stringify({
+              ok: false,
+              message:
+                "Toss Secret Key가 설정되지 않았습니다."
+            }),
+            {
+              status: 500,
+
+              headers: {
+                "Content-Type":
+                  "application/json",
+
+                ...corsHeaders
+              }
+            }
+          );
+        }
+
+
+        // ==============================
+        // Toss 결제 승인 요청
+        // ==============================
+
+        const auth =
+          btoa(secretKey + ":");
+
+
+        const tossResponse =
+          await fetch(
+            "https://api.tosspayments.com/v1/payments/confirm",
+            {
+              method: "POST",
+
+              headers: {
+                "Authorization":
+                  "Basic " + auth,
+
+                "Content-Type":
+                  "application/json"
+              },
+
+              body: JSON.stringify({
+                paymentKey,
+                orderId,
+                amount:
+                  Number(amount)
+              })
+            }
+          );
+
+
+        const tossResult =
+          await tossResponse.json();
+
+
+        // ==============================
+        // Toss 승인 실패
+        // ==============================
+
+        if (!tossResponse.ok) {
+
+          console.error(
+            "Toss 결제 승인 실패:",
+            tossResult
+          );
+
+
+          return new Response(
+            JSON.stringify({
+              ok: false,
+              message:
+                tossResult.message ||
+                "결제 승인에 실패했습니다."
+            }),
+            {
+              status:
+                tossResponse.status,
+
+              headers: {
+                "Content-Type":
+                  "application/json",
+
+                ...corsHeaders
+              }
+            }
+          );
+        }
+
+
+        // ==============================
+        // 결제 성공 → D1 상태 변경
+        // ==============================
+
+        await env.DB
+          .prepare(`
+            UPDATE orders
+            SET status = 'PAID'
+            WHERE order_id = ?
+              AND amount = ?
+          `)
+          .bind(
+            orderId,
+            Number(amount)
+          )
+          .run();
+
+
+        // ==============================
+        // 성공
+        // ==============================
+
+        return new Response(
+          JSON.stringify({
+            ok: true,
+            payment:
+              tossResult
+          }),
+          {
+            status: 200,
+
+            headers: {
+              "Content-Type":
+                "application/json",
+
+              ...corsHeaders
+            }
+          }
+        );
+
+
+      } catch (error) {
+
+        console.error(
+          "Toss 결제 승인 오류:",
+          error
+        );
+
+
+        return new Response(
+          JSON.stringify({
+            ok: false,
+            message:
+              "결제 승인 처리 중 오류가 발생했습니다."
+          }),
+          {
+            status: 500,
+
+            headers: {
+              "Content-Type":
+                "application/json",
+
+              ...corsHeaders
+            }
+          }
+        );
+      }
+    }
+
+
+    // ==============================
     // 주문 접수
     // ==============================
 
