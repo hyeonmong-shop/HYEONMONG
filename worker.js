@@ -26,30 +26,24 @@ function getCorsHeaders(request) {
 export default {
   async fetch(request, env) {
 
-    const url =
-      new URL(request.url);
+    const url = new URL(request.url);
 
     const corsHeaders =
       getCorsHeaders(request);
 
 
-    // ==============================
-    // CORS 사전 요청
-    // ==============================
-
+    // CORS
     if (request.method === "OPTIONS") {
-
       return new Response(null, {
         status: 204,
         headers: corsHeaders
       });
-
     }
 
 
-    // ==============================
-    // Secret Key 설정 여부 확인
-    // ==============================
+    // =========================
+    // Secret Key 확인
+    // =========================
 
     if (
       url.pathname === "/api/secret-status" &&
@@ -64,11 +58,9 @@ export default {
         }),
         {
           status: 200,
-
           headers: {
             "Content-Type":
               "application/json",
-
             ...corsHeaders
           }
         }
@@ -76,9 +68,9 @@ export default {
     }
 
 
-    // ==============================
+    // =========================
     // Toss 결제 승인
-    // ==============================
+    // =========================
 
     if (
       url.pathname === "/api/payments/confirm" &&
@@ -97,7 +89,6 @@ export default {
         } = data;
 
 
-        // 필수값 확인
         if (
           !paymentKey ||
           !orderId ||
@@ -112,21 +103,15 @@ export default {
             }),
             {
               status: 400,
-
               headers: {
                 "Content-Type":
                   "application/json",
-
                 ...corsHeaders
               }
             }
           );
         }
 
-
-        // ==============================
-        // Toss Secret Key
-        // ==============================
 
         const secretKey =
           env.TOSS_SECRET_KEY;
@@ -142,21 +127,15 @@ export default {
             }),
             {
               status: 500,
-
               headers: {
                 "Content-Type":
                   "application/json",
-
                 ...corsHeaders
               }
             }
           );
         }
 
-
-        // ==============================
-        // Toss 결제 승인 요청
-        // ==============================
 
         const auth =
           btoa(secretKey + ":");
@@ -190,10 +169,6 @@ export default {
           await tossResponse.json();
 
 
-        // ==============================
-        // Toss 승인 실패
-        // ==============================
-
         if (!tossResponse.ok) {
 
           console.error(
@@ -216,17 +191,12 @@ export default {
               headers: {
                 "Content-Type":
                   "application/json",
-
                 ...corsHeaders
               }
             }
           );
         }
 
-
-        // ==============================
-        // 결제 성공 → D1 상태 변경
-        // ==============================
 
         await env.DB
           .prepare(`
@@ -242,10 +212,6 @@ export default {
           .run();
 
 
-        // ==============================
-        // 성공
-        // ==============================
-
         return new Response(
           JSON.stringify({
             ok: true,
@@ -258,7 +224,6 @@ export default {
             headers: {
               "Content-Type":
                 "application/json",
-
               ...corsHeaders
             }
           }
@@ -285,7 +250,6 @@ export default {
             headers: {
               "Content-Type":
                 "application/json",
-
               ...corsHeaders
             }
           }
@@ -294,9 +258,9 @@ export default {
     }
 
 
-    // ==============================
-    // 주문 접수
-    // ==============================
+    // =========================
+    // 주문 생성
+    // =========================
 
     if (
       url.pathname === "/api/orders" &&
@@ -319,7 +283,6 @@ export default {
         } = data;
 
 
-        // 필수값 확인
         if (
           !orderId ||
           !name ||
@@ -341,17 +304,12 @@ export default {
               headers: {
                 "Content-Type":
                   "application/json",
-
                 ...corsHeaders
               }
             }
           );
         }
 
-
-        // ==============================
-        // D1 주문 저장
-        // ==============================
 
         await env.DB
           .prepare(`
@@ -363,9 +321,10 @@ export default {
               items_json,
               amount,
               status,
+              delivery_status,
               created_at
             )
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
           `)
           .bind(
             orderId,
@@ -375,14 +334,11 @@ export default {
             JSON.stringify(items),
             Number(amount),
             "PENDING",
+            "상품준비중",
             new Date().toISOString()
           )
           .run();
 
-
-        // ==============================
-        // 성공
-        // ==============================
 
         return new Response(
           JSON.stringify({
@@ -397,7 +353,6 @@ export default {
             headers: {
               "Content-Type":
                 "application/json",
-
               ...corsHeaders
             }
           }
@@ -424,7 +379,6 @@ export default {
             headers: {
               "Content-Type":
                 "application/json",
-
               ...corsHeaders
             }
           }
@@ -433,9 +387,290 @@ export default {
     }
 
 
-    // ==============================
+    // =========================
+    // 고객 주문 조회
+    // 주문번호 + 전화번호
+    // =========================
+
+    if (
+      url.pathname === "/api/orders/lookup" &&
+      request.method === "POST"
+    ) {
+
+      try {
+
+        const data =
+          await request.json();
+
+
+        const {
+          orderId,
+          phone
+        } = data;
+
+
+        if (
+          !orderId ||
+          !phone
+        ) {
+
+          return new Response(
+            JSON.stringify({
+              ok: false,
+              message:
+                "주문번호와 전화번호를 입력해주세요."
+            }),
+            {
+              status: 400,
+
+              headers: {
+                "Content-Type":
+                  "application/json",
+                ...corsHeaders
+              }
+            }
+          );
+        }
+
+
+        const result =
+          await env.DB
+            .prepare(`
+              SELECT
+                order_id,
+                customer_name,
+                items_json,
+                amount,
+                status,
+                carrier,
+                tracking_number,
+                delivery_status,
+                created_at
+              FROM orders
+              WHERE order_id = ?
+                AND phone = ?
+              LIMIT 1
+            `)
+            .bind(
+              orderId,
+              phone
+            )
+            .first();
+
+
+        if (!result) {
+
+          return new Response(
+            JSON.stringify({
+              ok: false,
+              message:
+                "주문 정보를 찾을 수 없습니다."
+            }),
+            {
+              status: 404,
+
+              headers: {
+                "Content-Type":
+                  "application/json",
+                ...corsHeaders
+              }
+            }
+          );
+        }
+
+
+        return new Response(
+          JSON.stringify({
+            ok: true,
+
+            order: {
+              orderId:
+                result.order_id,
+
+              customerName:
+                result.customer_name,
+
+              items:
+                JSON.parse(
+                  result.items_json
+                ),
+
+              amount:
+                result.amount,
+
+              status:
+                result.status,
+
+              carrier:
+                result.carrier,
+
+              trackingNumber:
+                result.tracking_number,
+
+              deliveryStatus:
+                result.delivery_status,
+
+              createdAt:
+                result.created_at
+            }
+          }),
+          {
+            status: 200,
+
+            headers: {
+              "Content-Type":
+                "application/json",
+              ...corsHeaders
+            }
+          }
+        );
+
+
+      } catch (error) {
+
+        console.error(
+          "주문 조회 오류:",
+          error
+        );
+
+
+        return new Response(
+          JSON.stringify({
+            ok: false,
+            message:
+              "주문 조회 중 오류가 발생했습니다."
+          }),
+          {
+            status: 500,
+
+            headers: {
+              "Content-Type":
+                "application/json",
+              ...corsHeaders
+            }
+          }
+        );
+      }
+    }
+
+
+    // =========================
+    // 배송정보 등록
+    // 관리자용
+    // =========================
+
+    if (
+      url.pathname === "/api/orders/shipping" &&
+      request.method === "POST"
+    ) {
+
+      try {
+
+        const data =
+          await request.json();
+
+
+        const {
+          orderId,
+          carrier,
+          trackingNumber,
+          deliveryStatus
+        } = data;
+
+
+        if (
+          !orderId ||
+          !carrier ||
+          !trackingNumber
+        ) {
+
+          return new Response(
+            JSON.stringify({
+              ok: false,
+              message:
+                "주문번호, 택배사, 송장번호가 필요합니다."
+            }),
+            {
+              status: 400,
+
+              headers: {
+                "Content-Type":
+                  "application/json",
+                ...corsHeaders
+              }
+            }
+          );
+        }
+
+
+        await env.DB
+          .prepare(`
+            UPDATE orders
+            SET
+              carrier = ?,
+              tracking_number = ?,
+              delivery_status = ?
+            WHERE order_id = ?
+          `)
+          .bind(
+            carrier,
+            trackingNumber,
+            deliveryStatus ||
+              "상품준비중",
+            orderId
+          )
+          .run();
+
+
+        return new Response(
+          JSON.stringify({
+            ok: true,
+            message:
+              "배송정보가 저장되었습니다."
+          }),
+          {
+            status: 200,
+
+            headers: {
+              "Content-Type":
+                "application/json",
+              ...corsHeaders
+            }
+          }
+        );
+
+
+      } catch (error) {
+
+        console.error(
+          "배송정보 저장 오류:",
+          error
+        );
+
+
+        return new Response(
+          JSON.stringify({
+            ok: false,
+            message:
+              "배송정보 저장 중 오류가 발생했습니다."
+          }),
+          {
+            status: 500,
+
+            headers: {
+              "Content-Type":
+                "application/json",
+              ...corsHeaders
+            }
+          }
+        );
+      }
+    }
+
+
+    // =========================
     // 기본 응답
-    // ==============================
+    // =========================
 
     return new Response(
       JSON.stringify({
@@ -451,7 +686,6 @@ export default {
         headers: {
           "Content-Type":
             "application/json",
-
           ...corsHeaders
         }
       }
