@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <title>永夢 | 결제 완료</title>
 
   <style>
@@ -26,15 +27,70 @@
       background: white;
       border: 1px solid #f0dce3;
       border-radius: 18px;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.04);
+    }
+
+    .logo {
+      font-size: 28px;
+      margin-bottom: 25px;
+      letter-spacing: 3px;
+    }
+
+    .check {
+      width: 64px;
+      height: 64px;
+      margin: 0 auto 20px;
+      border-radius: 50%;
+      background: #f8dce6;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 30px;
     }
 
     h1 {
-      margin-bottom: 15px;
+      margin: 0 0 15px;
+      font-size: 24px;
     }
 
     p {
       line-height: 1.7;
       color: #666;
+      margin: 8px 0;
+    }
+
+    .order-info {
+      margin-top: 25px;
+      padding: 18px;
+      background: #fff7fa;
+      border-radius: 12px;
+      text-align: left;
+    }
+
+    .info-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 15px;
+      padding: 7px 0;
+      font-size: 14px;
+    }
+
+    .info-label {
+      color: #888;
+      white-space: nowrap;
+    }
+
+    .info-value {
+      color: #333;
+      font-weight: 600;
+      text-align: right;
+      word-break: break-all;
+    }
+
+    .notice {
+      margin-top: 22px;
+      font-size: 13px;
+      color: #999;
     }
 
     .error {
@@ -47,10 +103,48 @@
 
   <div class="box">
 
-    <h1 id="title">결제 승인 중입니다.</h1>
+    <div class="logo">永夢</div>
+
+    <div id="check" class="check">
+      ✓
+    </div>
+
+    <h1 id="title">
+      결제 승인 중입니다.
+    </h1>
 
     <p id="message">
       잠시만 기다려주세요.
+    </p>
+
+    <div id="order-info" class="order-info" style="display: none;">
+
+      <div class="info-row">
+        <span class="info-label">
+          주문번호
+        </span>
+
+        <span
+          id="order-id"
+          class="info-value"
+        ></span>
+      </div>
+
+      <div class="info-row">
+        <span class="info-label">
+          결제금액
+        </span>
+
+        <span
+          id="amount"
+          class="info-value"
+        ></span>
+      </div>
+
+    </div>
+
+    <p id="notice" class="notice" style="display: none;">
+      주문해주셔서 감사합니다.
     </p>
 
   </div>
@@ -65,6 +159,7 @@
           window.location.search
         );
 
+
       const paymentKey =
         params.get("paymentKey");
 
@@ -75,29 +170,47 @@
         params.get("amount");
 
 
-      // 필수값 확인
+      // ==============================
+      // 결제 승인 정보 확인
+      // ==============================
+
       if (
         !paymentKey ||
         !orderId ||
         !amount
       ) {
 
-        document.getElementById("title")
-          .textContent =
+        document.getElementById(
+          "check"
+        ).textContent = "×";
+
+        document.getElementById(
+          "check"
+        ).style.background = "#f5dddd";
+
+        document.getElementById(
+          "title"
+        ).textContent =
           "결제 승인 오류";
 
-        document.getElementById("message")
-          .textContent =
+        document.getElementById(
+          "message"
+        ).textContent =
           "결제 승인에 필요한 정보가 없습니다.";
 
-        document.getElementById("message")
-          .className = "error";
+        document.getElementById(
+          "message"
+        ).className = "error";
 
         return;
       }
 
 
       try {
+
+        // ==============================
+        // Worker에 결제 승인 요청
+        // ==============================
 
         const response =
           await fetch(
@@ -128,6 +241,10 @@
           await response.json();
 
 
+        // ==============================
+        // 승인 실패
+        // ==============================
+
         if (
           !response.ok ||
           !result.ok
@@ -137,17 +254,58 @@
             result.message ||
             "결제 승인에 실패했습니다."
           );
+
         }
 
 
+        // ==============================
         // 결제 승인 성공
-        document.getElementById("title")
-          .textContent =
+        // ==============================
+
+        document.getElementById(
+          "check"
+        ).textContent = "✓";
+
+        document.getElementById(
+          "title"
+        ).textContent =
           "결제가 완료되었습니다.";
 
-        document.getElementById("message")
-          .textContent =
+        document.getElementById(
+          "message"
+        ).textContent =
           "주문이 정상적으로 접수되었습니다.";
+
+
+        // 주문번호 표시
+        document.getElementById(
+          "order-id"
+        ).textContent =
+          orderId;
+
+
+        // 결제금액 표시
+        document.getElementById(
+          "amount"
+        ).textContent =
+          Number(amount).toLocaleString(
+            "ko-KR"
+          ) + "원";
+
+
+        // 주문 정보 표시
+        document.getElementById(
+          "order-info"
+        ).style.display =
+          "block";
+
+
+        // 안내 문구 표시
+        document.getElementById(
+          "notice"
+        ).style.display =
+          "block";
+
 
       } catch (error) {
 
@@ -156,18 +314,33 @@
           error
         );
 
-        document.getElementById("title")
-          .textContent =
+
+        document.getElementById(
+          "check"
+        ).textContent = "×";
+
+        document.getElementById(
+          "check"
+        ).style.background = "#f5dddd";
+
+        document.getElementById(
+          "title"
+        ).textContent =
           "결제 승인 오류";
 
-        document.getElementById("message")
-          .textContent =
+        document.getElementById(
+          "message"
+        ).textContent =
           error.message ||
           "결제 승인 중 오류가 발생했습니다.";
 
-        document.getElementById("message")
-          .className = "error";
+        document.getElementById(
+          "message"
+        ).className =
+          "error";
+
       }
+
     }
 
 
