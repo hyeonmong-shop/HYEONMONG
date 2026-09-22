@@ -1,0 +1,1392 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <title>永夢 | 관리자</title>
+
+
+  <style>
+
+    * {
+      box-sizing: border-box;
+    }
+
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+
+      background: #f7f7f7;
+
+      font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
+
+      color: #333;
+    }
+
+
+    .container {
+      width: calc(100% - 30px);
+      max-width: 700px;
+
+      margin: 0 auto;
+
+      padding: 40px 0 70px;
+    }
+
+
+    .logo {
+      text-align: center;
+
+      font-size: 28px;
+
+      letter-spacing: 5px;
+
+      margin-bottom: 8px;
+    }
+
+
+    .subtitle {
+      text-align: center;
+
+      color: #999;
+
+      font-size: 13px;
+
+      margin-bottom: 30px;
+    }
+
+
+    .box {
+      background: white;
+
+      border-radius: 16px;
+
+      padding: 22px;
+
+      margin-bottom: 18px;
+
+      box-shadow:
+        0 5px 20px
+        rgba(0, 0, 0, 0.05);
+    }
+
+
+    label {
+      display: block;
+
+      font-size: 13px;
+
+      color: #777;
+
+      margin-bottom: 7px;
+    }
+
+
+    input,
+    select {
+
+      width: 100%;
+
+      height: 46px;
+
+      border:
+        1px solid #ddd;
+
+      border-radius: 9px;
+
+      padding: 0 12px;
+
+      font-size: 14px;
+
+      outline: none;
+
+      background: white;
+
+    }
+
+
+    input:focus,
+    select:focus {
+      border-color: #aaa;
+    }
+
+
+    button {
+
+      border: none;
+
+      border-radius: 9px;
+
+      height: 46px;
+
+      padding: 0 18px;
+
+      background: #333;
+
+      color: white;
+
+      font-size: 14px;
+
+      cursor: pointer;
+
+    }
+
+
+    button:active {
+      opacity: 0.8;
+    }
+
+
+    .login-button {
+      width: 100%;
+
+      margin-top: 5px;
+    }
+
+
+    .error {
+
+      margin-top: 12px;
+
+      color: #d44;
+
+      font-size: 13px;
+
+      text-align: center;
+
+    }
+
+
+    #admin {
+
+      display: none;
+
+    }
+
+
+    .topbar {
+
+      display: flex;
+
+      justify-content: space-between;
+
+      align-items: center;
+
+      gap: 10px;
+
+      margin-bottom: 18px;
+
+    }
+
+
+    .topbar-title {
+
+      font-size: 18px;
+
+      font-weight: 600;
+
+    }
+
+
+    .logout {
+
+      background: #eee;
+
+      color: #555;
+
+      height: 38px;
+
+      padding: 0 13px;
+
+      font-size: 12px;
+
+    }
+
+
+    .order {
+
+      border:
+        1px solid #eee;
+
+      border-radius: 14px;
+
+      padding: 18px;
+
+      margin-bottom: 15px;
+
+    }
+
+
+    .order-header {
+
+      display: flex;
+
+      justify-content: space-between;
+
+      gap: 10px;
+
+      align-items: flex-start;
+
+      margin-bottom: 15px;
+
+    }
+
+
+    .order-number {
+
+      font-size: 13px;
+
+      font-weight: 600;
+
+      word-break: break-all;
+
+    }
+
+
+    .status {
+
+      font-size: 12px;
+
+      background: #f5e5eb;
+
+      border-radius: 20px;
+
+      padding: 5px 9px;
+
+      white-space: nowrap;
+
+    }
+
+
+    .info {
+
+      background: #fafafa;
+
+      border-radius: 10px;
+
+      padding: 12px;
+
+      margin-bottom: 13px;
+
+    }
+
+
+    .row {
+
+      display: flex;
+
+      justify-content: space-between;
+
+      gap: 15px;
+
+      padding: 5px 0;
+
+      font-size: 13px;
+
+    }
+
+
+    .row-label {
+
+      color: #888;
+
+      white-space: nowrap;
+
+    }
+
+
+    .row-value {
+
+      text-align: right;
+
+      word-break: break-all;
+
+    }
+
+
+    .items {
+
+      border-top:
+        1px solid #eee;
+
+      margin-top: 10px;
+
+      padding-top: 10px;
+
+    }
+
+
+    .shipping-title {
+
+      font-size: 14px;
+
+      font-weight: 600;
+
+      margin-bottom: 12px;
+
+    }
+
+
+    .shipping-grid {
+
+      display: grid;
+
+      grid-template-columns:
+        1fr 1fr;
+
+      gap: 10px;
+
+    }
+
+
+    .shipping-grid .full {
+
+      grid-column:
+        1 / -1;
+
+    }
+
+
+    .save-button {
+
+      width: 100%;
+
+      margin-top: 12px;
+
+    }
+
+
+    .save-button.saved {
+
+      background: #777;
+
+    }
+
+
+    .empty {
+
+      text-align: center;
+
+      padding: 35px 10px;
+
+      color: #999;
+
+      font-size: 13px;
+
+    }
+
+
+    .refresh {
+
+      background: #eee;
+
+      color: #555;
+
+      width: 100%;
+
+      margin-bottom: 18px;
+
+    }
+
+
+    @media (
+      max-width: 500px
+    ) {
+
+      .shipping-grid {
+
+        grid-template-columns:
+          1fr;
+
+      }
+
+      .shipping-grid .full {
+
+        grid-column:
+          auto;
+
+      }
+
+    }
+
+  </style>
+
+</head>
+
+
+<body>
+
+
+  <main class="container">
+
+
+    <div class="logo">
+      永夢
+    </div>
+
+
+    <div class="subtitle">
+      관리자
+    </div>
+
+
+    <!-- =========================
+         로그인
+    ========================== -->
+
+    <section
+      id="login"
+      class="box"
+    >
+
+      <label for="password">
+        관리자 비밀번호
+      </label>
+
+      <input
+        id="password"
+        type="password"
+        placeholder="비밀번호를 입력해주세요."
+      >
+
+      <button
+        id="login-button"
+        class="login-button"
+      >
+        로그인
+      </button>
+
+      <div
+        id="login-error"
+        class="error"
+      ></div>
+
+    </section>
+
+
+    <!-- =========================
+         관리자
+    ========================== -->
+
+    <section
+      id="admin"
+    >
+
+      <div class="topbar">
+
+        <div class="topbar-title">
+          주문 관리
+        </div>
+
+        <button
+          id="logout-button"
+          class="logout"
+        >
+          로그아웃
+        </button>
+
+      </div>
+
+
+      <button
+        id="refresh-button"
+        class="refresh"
+      >
+        주문 새로고침
+      </button>
+
+
+      <div
+        id="orders"
+      ></div>
+
+    </section>
+
+
+  </main>
+
+
+  <script>
+
+
+    const WORKER_URL =
+      "https://hyeonmong.hyoeunan240.workers.dev";
+
+
+    const login =
+      document.getElementById(
+        "login"
+      );
+
+
+    const admin =
+      document.getElementById(
+        "admin"
+      );
+
+
+    const passwordInput =
+      document.getElementById(
+        "password"
+      );
+
+
+    const loginButton =
+      document.getElementById(
+        "login-button"
+      );
+
+
+    const loginError =
+      document.getElementById(
+        "login-error"
+      );
+
+
+    const orders =
+      document.getElementById(
+        "orders"
+      );
+
+
+    const logoutButton =
+      document.getElementById(
+        "logout-button"
+      );
+
+
+    const refreshButton =
+      document.getElementById(
+        "refresh-button"
+      );
+
+
+    let adminToken =
+      sessionStorage.getItem(
+        "hyeonmong_admin_token"
+      ) || "";
+
+
+    // =========================
+    // 로그인
+    // =========================
+
+    loginButton.onclick =
+      async function () {
+
+        loginError.textContent = "";
+
+        const password =
+          passwordInput.value;
+
+        if (!password) {
+
+          loginError.textContent =
+            "비밀번호를 입력해주세요.";
+
+          return;
+        }
+
+
+        loginButton.disabled =
+          true;
+
+        loginButton.textContent =
+          "로그인 중...";
+
+
+        try {
+
+          const response =
+            await fetch(
+              WORKER_URL +
+              "/api/admin/login",
+              {
+                method: "POST",
+
+                headers: {
+                  "Content-Type":
+                    "application/json"
+                },
+
+                body:
+                  JSON.stringify({
+                    password:
+                      password
+                  })
+              }
+            );
+
+
+          const data =
+            await response.json();
+
+
+          if (
+            !response.ok ||
+            !data.ok
+          ) {
+
+            throw new Error(
+              data.message ||
+              "로그인에 실패했습니다."
+            );
+          }
+
+
+          adminToken =
+            data.token;
+
+
+          sessionStorage.setItem(
+            "hyeonmong_admin_token",
+            adminToken
+          );
+
+
+          passwordInput.value = "";
+
+          showAdmin();
+
+          loadOrders();
+
+
+        } catch (error) {
+
+          loginError.textContent =
+            error.message ||
+            "로그인 중 오류가 발생했습니다.";
+
+        } finally {
+
+          loginButton.disabled =
+            false;
+
+          loginButton.textContent =
+            "로그인";
+
+        }
+
+      };
+
+
+    // =========================
+    // 관리자 화면
+    // =========================
+
+    function showAdmin() {
+
+      login.style.display =
+        "none";
+
+      admin.style.display =
+        "block";
+
+    }
+
+
+    // =========================
+    // 로그아웃
+    // =========================
+
+    logoutButton.onclick =
+      function () {
+
+        adminToken = "";
+
+        sessionStorage.removeItem(
+          "hyeonmong_admin_token"
+        );
+
+        admin.style.display =
+          "none";
+
+        login.style.display =
+          "block";
+
+      };
+
+
+    // =========================
+    // 주문 목록
+    // =========================
+
+    async function loadOrders() {
+
+      orders.innerHTML =
+        `
+          <div class="box">
+            <div class="empty">
+              주문을 불러오는 중...
+            </div>
+          </div>
+        `;
+
+
+      try {
+
+        const response =
+          await fetch(
+            WORKER_URL +
+            "/api/admin/orders",
+            {
+              method: "GET",
+
+              headers: {
+                "Authorization":
+                  "Bearer " +
+                  adminToken
+              }
+            }
+          );
+
+
+        const data =
+          await response.json();
+
+
+        if (
+          !response.ok ||
+          !data.ok
+        ) {
+
+          if (
+            response.status === 401
+          ) {
+
+            logout();
+
+            throw new Error(
+              "관리자 인증이 만료되었습니다."
+            );
+
+          }
+
+          throw new Error(
+            data.message ||
+            "주문을 불러오지 못했습니다."
+          );
+
+        }
+
+
+        renderOrders(
+          data.orders || []
+        );
+
+
+      } catch (error) {
+
+        orders.innerHTML =
+          `
+            <div class="box">
+              <div class="empty">
+                ${escapeHtml(
+                  error.message ||
+                  "오류가 발생했습니다."
+                )}
+              </div>
+            </div>
+          `;
+
+      }
+
+    }
+
+
+    // =========================
+    // 주문 화면
+    // =========================
+
+    function renderOrders(
+      orderList
+    ) {
+
+      if (
+        orderList.length === 0
+      ) {
+
+        orders.innerHTML =
+          `
+            <div class="box">
+              <div class="empty">
+                아직 주문이 없습니다.
+              </div>
+            </div>
+          `;
+
+        return;
+      }
+
+
+      orders.innerHTML = "";
+
+
+      orderList.forEach(
+        function(order) {
+
+          const element =
+            document.createElement(
+              "div"
+            );
+
+          element.className =
+            "order";
+
+
+          const items =
+            Array.isArray(
+              order.items
+            )
+              ? order.items
+              : [];
+
+
+          const itemsHtml =
+            items.map(
+              function(item) {
+
+                return `
+                  <div class="row">
+                    <span class="row-label">
+                      ${escapeHtml(
+                        item.name
+                      )}
+                      ×
+                      ${item.quantity}
+                    </span>
+
+                    <span class="row-value">
+                      ${(
+                        Number(item.price) *
+                        Number(item.quantity)
+                      ).toLocaleString(
+                        "ko-KR"
+                      )}원
+                    </span>
+                  </div>
+                `;
+
+              }
+            ).join("");
+
+
+          element.innerHTML =
+            `
+
+              <div class="order-header">
+
+                <div
+                  class="order-number"
+                >
+                  ${escapeHtml(
+                    order.orderId
+                  )}
+                </div>
+
+                <div class="status">
+                  ${escapeHtml(
+                    order.status ===
+                    "PAID"
+                      ? "결제완료"
+                      : order.status
+                  )}
+                </div>
+
+              </div>
+
+
+              <div class="info">
+
+                <div class="row">
+
+                  <span class="row-label">
+                    주문자
+                  </span>
+
+                  <span class="row-value">
+                    ${escapeHtml(
+                      order.customerName
+                    )}
+                  </span>
+
+                </div>
+
+
+                <div class="row">
+
+                  <span class="row-label">
+                    전화번호
+                  </span>
+
+                  <span class="row-value">
+                    ${escapeHtml(
+                      order.phone
+                    )}
+                  </span>
+
+                </div>
+
+
+                <div class="row">
+
+                  <span class="row-label">
+                    주소
+                  </span>
+
+                  <span class="row-value">
+                    ${escapeHtml(
+                      order.address
+                    )}
+                  </span>
+
+                </div>
+
+
+                <div class="row">
+
+                  <span class="row-label">
+                    결제금액
+                  </span>
+
+                  <span class="row-value">
+                    ${Number(
+                      order.amount
+                    ).toLocaleString(
+                      "ko-KR"
+                    )}원
+                  </span>
+
+                </div>
+
+
+                <div class="items">
+
+                  ${itemsHtml}
+
+                </div>
+
+              </div>
+
+
+              <div class="shipping-title">
+                배송정보
+              </div>
+
+
+              <div class="shipping-grid">
+
+
+                <div>
+
+                  <label>
+                    택배사
+                  </label>
+
+                  <select
+                    class="carrier"
+                  >
+
+                    <option value="">
+                      선택해주세요
+                    </option>
+
+                    <option value="CJ대한통운">
+                      CJ대한통운
+                    </option>
+
+                    <option value="한진택배">
+                      한진택배
+                    </option>
+
+                    <option value="롯데택배">
+                      롯데택배
+                    </option>
+
+                    <option value="우체국택배">
+                      우체국택배
+                    </option>
+
+                    <option value="로젠택배">
+                      로젠택배
+                    </option>
+
+                    <option value="CU 편의점택배">
+                      CU 편의점택배
+                    </option>
+
+                    <option value="GS25 편의점택배">
+                      GS25 편의점택배
+                    </option>
+
+                  </select>
+
+                </div>
+
+
+                <div>
+
+                  <label>
+                    배송상태
+                  </label>
+
+                  <select
+                    class="delivery-status"
+                  >
+
+                    <option value="상품준비중">
+                      상품준비중
+                    </option>
+
+                    <option value="배송준비중">
+                      배송준비중
+                    </option>
+
+                    <option value="배송중">
+                      배송중
+                    </option>
+
+                    <option value="배송완료">
+                      배송완료
+                    </option>
+
+                  </select>
+
+                </div>
+
+
+                <div class="full">
+
+                  <label>
+                    송장번호
+                  </label>
+
+                  <input
+                    class="tracking-number"
+                    type="text"
+                    placeholder="송장번호 입력"
+                  >
+
+                </div>
+
+
+              </div>
+
+
+              <button
+                class="save-button"
+              >
+                배송정보 저장
+              </button>
+
+            `;
+
+
+          const carrier =
+            element.querySelector(
+              ".carrier"
+            );
+
+
+          const deliveryStatus =
+            element.querySelector(
+              ".delivery-status"
+            );
+
+
+          const trackingNumber =
+            element.querySelector(
+              ".tracking-number"
+            );
+
+
+          const saveButton =
+            element.querySelector(
+              ".save-button"
+            );
+
+
+          carrier.value =
+            order.carrier || "";
+
+
+          deliveryStatus.value =
+            order.deliveryStatus ||
+            "상품준비중";
+
+
+          trackingNumber.value =
+            order.trackingNumber ||
+            "";
+
+
+          saveButton.onclick =
+            async function() {
+
+              await saveShipping(
+                order.orderId,
+                carrier.value,
+                trackingNumber.value,
+                deliveryStatus.value,
+                saveButton
+              );
+
+            };
+
+
+          orders.appendChild(
+            element
+          );
+
+        }
+      );
+
+    }
+
+
+    // =========================
+    // 배송정보 저장
+    // =========================
+
+    async function saveShipping(
+      orderId,
+      carrier,
+      trackingNumber,
+      deliveryStatus,
+      button
+    ) {
+
+      if (!carrier) {
+
+        alert(
+          "택배사를 선택해주세요."
+        );
+
+        return;
+      }
+
+
+      if (!trackingNumber) {
+
+        alert(
+          "송장번호를 입력해주세요."
+        );
+
+        return;
+      }
+
+
+      button.disabled =
+        true;
+
+      button.textContent =
+        "저장 중...";
+
+
+      try {
+
+        const response =
+          await fetch(
+            WORKER_URL +
+            "/api/orders/shipping",
+            {
+              method: "POST",
+
+              headers: {
+                "Content-Type":
+                  "application/json",
+
+                "Authorization":
+                  "Bearer " +
+                  adminToken
+              },
+
+              body:
+                JSON.stringify({
+                  orderId:
+                    orderId,
+
+                  carrier:
+                    carrier,
+
+                  trackingNumber:
+                    trackingNumber,
+
+                  deliveryStatus:
+                    deliveryStatus
+                })
+            }
+          );
+
+
+        const data =
+          await response.json();
+
+
+        if (
+          !response.ok ||
+          !data.ok
+        ) {
+
+          if (
+            response.status === 401
+          ) {
+
+            logout();
+
+            throw new Error(
+              "관리자 인증이 만료되었습니다."
+            );
+
+          }
+
+          throw new Error(
+            data.message ||
+            "배송정보 저장에 실패했습니다."
+          );
+
+        }
+
+
+        button.textContent =
+          "저장 완료";
+
+        button.classList.add(
+          "saved"
+        );
+
+
+        setTimeout(
+          function() {
+
+            button.textContent =
+              "배송정보 저장";
+
+            button.classList.remove(
+              "saved"
+            );
+
+          },
+          1500
+        );
+
+
+      } catch (error) {
+
+        alert(
+          error.message ||
+          "배송정보 저장 중 오류가 발생했습니다."
+        );
+
+
+        button.textContent =
+          "배송정보 저장";
+
+      } finally {
+
+        button.disabled =
+          false;
+
+      }
+
+    }
+
+
+    // =========================
+    // 로그아웃 함수
+    // =========================
+
+    function logout() {
+
+      adminToken = "";
+
+      sessionStorage.removeItem(
+        "hyeonmong_admin_token"
+      );
+
+      admin.style.display =
+        "none";
+
+      login.style.display =
+        "block";
+
+    }
+
+
+    // =========================
+    // 새로고침
+    // =========================
+
+    refreshButton.onclick =
+      function() {
+
+        loadOrders();
+
+      };
+
+
+    // =========================
+    // HTML 안전처리
+    // =========================
+
+    function escapeHtml(
+      value
+    ) {
+
+      return String(
+        value ?? ""
+      )
+        .replace(
+          /&/g,
+          "&amp;"
+        )
+        .replace(
+          /</g,
+          "&lt;"
+        )
+        .replace(
+          />/g,
+          "&gt;"
+        )
+        .replace(
+          /"/g,
+          "&quot;"
+        )
+        .replace(
+          /'/g,
+          "&#039;"
+        );
+
+    }
+
+
+    // =========================
+    // 기존 로그인 유지
+    // =========================
+
+    if (adminToken) {
+
+      showAdmin();
+
+      loadOrders();
+
+    }
+
+  </script>
+
+
+</body>
+
+</html>
