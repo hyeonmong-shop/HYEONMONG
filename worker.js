@@ -1,23 +1,56 @@
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "https://hyoeunan240-bot.github.io",
-  "Access-Control-Allow-Methods": "POST, OPTIONS",
-  "Access-Control-Allow-Headers": "Content-Type"
-};
+function getCorsHeaders(request) {
+  const origin = request.headers.get("Origin");
+
+  const allowedOrigins = [
+    "https://hyoeunan240-bot.github.io"
+  ];
+
+  return {
+    "Access-Control-Allow-Origin":
+      allowedOrigins.includes(origin)
+        ? origin
+        : "https://hyoeunan240-bot.github.io",
+
+    "Access-Control-Allow-Methods":
+      "POST, OPTIONS",
+
+    "Access-Control-Allow-Headers":
+      "Content-Type",
+
+    "Access-Control-Max-Age":
+      "86400"
+  };
+}
+
 
 export default {
   async fetch(request, env) {
 
-    const url = new URL(request.url);
+    const url =
+      new URL(request.url);
 
-    // CORS 사전 요청 처리
+    const corsHeaders =
+      getCorsHeaders(request);
+
+
+    // ==============================
+    // CORS 사전 요청
+    // ==============================
+
     if (request.method === "OPTIONS") {
+
       return new Response(null, {
+        status: 204,
         headers: corsHeaders
       });
+
     }
 
 
+    // ==============================
     // 주문 접수
+    // ==============================
+
     if (
       url.pathname === "/api/orders" &&
       request.method === "POST"
@@ -52,12 +85,16 @@ export default {
           return new Response(
             JSON.stringify({
               ok: false,
-              message: "필수 주문 정보가 없습니다."
+              message:
+                "필수 주문 정보가 없습니다."
             }),
             {
               status: 400,
+
               headers: {
-                "Content-Type": "application/json",
+                "Content-Type":
+                  "application/json",
+
                 ...corsHeaders
               }
             }
@@ -65,20 +102,24 @@ export default {
         }
 
 
-        // D1에 주문 저장
-        await env.DB.prepare(`
-          INSERT INTO orders (
-            order_id,
-            customer_name,
-            phone,
-            address,
-            items_json,
-            amount,
-            status,
-            created_at
-          )
-          VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-        `)
+        // ==============================
+        // D1 주문 저장
+        // ==============================
+
+        await env.DB
+          .prepare(`
+            INSERT INTO orders (
+              order_id,
+              customer_name,
+              phone,
+              address,
+              items_json,
+              amount,
+              status,
+              created_at
+            )
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+          `)
           .bind(
             orderId,
             name,
@@ -92,15 +133,24 @@ export default {
           .run();
 
 
+        // ==============================
+        // 성공
+        // ==============================
+
         return new Response(
           JSON.stringify({
             ok: true,
-            message: "주문이 접수되었습니다.",
+            message:
+              "주문이 접수되었습니다.",
             orderId
           }),
           {
+            status: 200,
+
             headers: {
-              "Content-Type": "application/json",
+              "Content-Type":
+                "application/json",
+
               ...corsHeaders
             }
           }
@@ -109,16 +159,25 @@ export default {
 
       } catch (error) {
 
+        console.error(
+          "D1 주문 저장 오류:",
+          error
+        );
+
+
         return new Response(
           JSON.stringify({
             ok: false,
-            message: "주문 저장 중 오류가 발생했습니다.",
-            error: error.message
+            message:
+              "주문 저장 중 오류가 발생했습니다."
           }),
           {
             status: 500,
+
             headers: {
-              "Content-Type": "application/json",
+              "Content-Type":
+                "application/json",
+
               ...corsHeaders
             }
           }
@@ -127,19 +186,29 @@ export default {
     }
 
 
-    // 기본 Worker 응답
+    // ==============================
+    // 기본 응답
+    // ==============================
+
     return new Response(
       JSON.stringify({
         ok: true,
-        message: "HYEONMONG Worker is connected",
-        database: !!env.DB
+        message:
+          "HYEONMONG Worker is connected",
+        database:
+          !!env.DB
       }),
       {
+        status: 200,
+
         headers: {
-          "Content-Type": "application/json",
+          "Content-Type":
+            "application/json",
+
           ...corsHeaders
         }
       }
     );
+
   }
 };
