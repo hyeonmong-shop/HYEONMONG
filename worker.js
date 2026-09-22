@@ -5,7 +5,7 @@ function getCorsHeaders(request) {
     "https://hyoeunan240-bot.github.io"
   ];
 
-  const headers = {
+  return {
     "Access-Control-Allow-Origin":
       allowedOrigins.includes(origin)
         ? origin
@@ -20,8 +20,29 @@ function getCorsHeaders(request) {
     "Access-Control-Max-Age":
       "86400"
   };
+}
 
-  return headers;
+
+// =========================
+// JSON 응답
+// =========================
+
+function jsonResponse(
+  data,
+  status,
+  corsHeaders
+) {
+  return new Response(
+    JSON.stringify(data),
+    {
+      status,
+      headers: {
+        "Content-Type":
+          "application/json",
+        ...corsHeaders
+      }
+    }
+  );
 }
 
 
@@ -184,6 +205,158 @@ async function isAdmin(
 }
 
 
+// =========================
+// 택배사 이름 → 택배넷 코드
+// =========================
+
+function getTaekbaeCarrierCode(
+  carrier
+) {
+
+  const map = {
+
+    "CJ대한통운":
+      "cj",
+
+    "한진택배":
+      "hanjin",
+
+    "롯데택배":
+      "lotte",
+
+    "우체국택배":
+      "epost",
+
+    "로젠택배":
+      "logen",
+
+    "CU 편의점택배":
+      "cu",
+
+    "GS25 편의점택배":
+      "gs25"
+
+  };
+
+  return map[carrier] || null;
+}
+
+
+// =========================
+// 택배넷 배송조회
+// =========================
+
+async function getTrackingInfo(
+  carrier,
+  trackingNumber,
+  apiKey
+) {
+
+  if (!apiKey) {
+
+    throw new Error(
+      "TAEKBAENET_API_KEY가 설정되지 않았습니다."
+    );
+
+  }
+
+
+  const normalizedNumber =
+    String(trackingNumber || "")
+      .replace(/-/g, "")
+      .trim()
+      .toUpperCase();
+
+
+  if (!normalizedNumber) {
+
+    throw new Error(
+      "운송장번호가 없습니다."
+    );
+
+  }
+
+
+  const carrierCode =
+    getTaekbaeCarrierCode(
+      carrier
+    );
+
+
+  const trackingUrl =
+    new URL(
+      "https://taekbae.net/v1/tracking/" +
+      encodeURIComponent(
+        normalizedNumber
+      )
+    );
+
+
+  // 택배사가 확인되어 있으면 직접 지정
+  if (carrierCode) {
+
+    trackingUrl.searchParams.set(
+      "carrier",
+      carrierCode
+    );
+
+  }
+
+
+  // 주문조회에는 최신 이벤트만 필요
+  trackingUrl.searchParams.set(
+    "events",
+    "latest"
+  );
+
+
+  const response =
+    await fetch(
+      trackingUrl.toString(),
+      {
+        method: "GET",
+
+        headers: {
+          "Authorization":
+            "Bearer " + apiKey,
+
+          "Accept":
+            "application/json"
+        }
+      }
+    );
+
+
+  const result =
+    await response.json();
+
+
+  if (!response.ok) {
+
+    const error =
+      new Error(
+        result.title ||
+        "배송정보를 가져오지 못했습니다."
+      );
+
+    error.status =
+      response.status;
+
+    error.code =
+      result.code || "";
+
+    error.requestId =
+      result.request_id || "";
+
+    throw error;
+
+  }
+
+
+  return result;
+}
+
+
 export default {
 
   async fetch(
@@ -215,6 +388,7 @@ export default {
             corsHeaders
         }
       );
+
     }
 
 
@@ -237,25 +411,21 @@ export default {
         const password =
           data.password || "";
 
+
         if (
           !env.ADMIN_PASSWORD
         ) {
 
-          return new Response(
-            JSON.stringify({
+          return jsonResponse(
+            {
               ok: false,
               message:
                 "관리자 비밀번호가 설정되지 않았습니다."
-            }),
-            {
-              status: 500,
-              headers: {
-                "Content-Type":
-                  "application/json",
-                ...corsHeaders
-              }
-            }
+            },
+            500,
+            corsHeaders
           );
+
         }
 
 
@@ -264,21 +434,16 @@ export default {
           env.ADMIN_PASSWORD
         ) {
 
-          return new Response(
-            JSON.stringify({
+          return jsonResponse(
+            {
               ok: false,
               message:
                 "관리자 비밀번호가 올바르지 않습니다."
-            }),
-            {
-              status: 401,
-              headers: {
-                "Content-Type":
-                  "application/json",
-                ...corsHeaders
-              }
-            }
+            },
+            401,
+            corsHeaders
           );
+
         }
 
 
@@ -313,22 +478,18 @@ export default {
           error
         );
 
-        return new Response(
-          JSON.stringify({
+        return jsonResponse(
+          {
             ok: false,
             message:
               "관리자 로그인 중 오류가 발생했습니다."
-          }),
-          {
-            status: 500,
-            headers: {
-              "Content-Type":
-                "application/json",
-              ...corsHeaders
-            }
-          }
+          },
+          500,
+          corsHeaders
         );
+
       }
+
     }
 
 
@@ -343,21 +504,20 @@ export default {
       "GET"
     ) {
 
-      return new Response(
-        JSON.stringify({
-          ok: true,
-          secretConfigured:
-            !!env.TOSS_SECRET_KEY
-        }),
+      return jsonResponse(
         {
-          status: 200,
-          headers: {
-            "Content-Type":
-              "application/json",
-            ...corsHeaders
-          }
-        }
+          ok: true,
+
+          secretConfigured:
+            !!env.TOSS_SECRET_KEY,
+
+          taekbaeConfigured:
+            !!env.TAEKBAENET_API_KEY
+        },
+        200,
+        corsHeaders
       );
+
     }
 
 
@@ -390,21 +550,16 @@ export default {
           !amount
         ) {
 
-          return new Response(
-            JSON.stringify({
+          return jsonResponse(
+            {
               ok: false,
               message:
                 "결제 승인 정보가 없습니다."
-            }),
-            {
-              status: 400,
-              headers: {
-                "Content-Type":
-                  "application/json",
-                ...corsHeaders
-              }
-            }
+            },
+            400,
+            corsHeaders
           );
+
         }
 
 
@@ -414,21 +569,16 @@ export default {
 
         if (!secretKey) {
 
-          return new Response(
-            JSON.stringify({
+          return jsonResponse(
+            {
               ok: false,
               message:
                 "Toss Secret Key가 설정되지 않았습니다."
-            }),
-            {
-              status: 500,
-              headers: {
-                "Content-Type":
-                  "application/json",
-                ...corsHeaders
-              }
-            }
+            },
+            500,
+            corsHeaders
           );
+
         }
 
 
@@ -477,24 +627,17 @@ export default {
           );
 
 
-          return new Response(
-            JSON.stringify({
+          return jsonResponse(
+            {
               ok: false,
               message:
                 tossResult.message ||
                 "결제 승인에 실패했습니다."
-            }),
-            {
-              status:
-                tossResponse.status,
-
-              headers: {
-                "Content-Type":
-                  "application/json",
-                ...corsHeaders
-              }
-            }
+            },
+            tossResponse.status,
+            corsHeaders
           );
+
         }
 
 
@@ -512,21 +655,14 @@ export default {
           .run();
 
 
-        return new Response(
-          JSON.stringify({
+        return jsonResponse(
+          {
             ok: true,
             payment:
               tossResult
-          }),
-          {
-            status: 200,
-
-            headers: {
-              "Content-Type":
-                "application/json",
-              ...corsHeaders
-            }
-          }
+          },
+          200,
+          corsHeaders
         );
 
 
@@ -538,23 +674,18 @@ export default {
         );
 
 
-        return new Response(
-          JSON.stringify({
+        return jsonResponse(
+          {
             ok: false,
             message:
               "결제 승인 처리 중 오류가 발생했습니다."
-          }),
-          {
-            status: 500,
-
-            headers: {
-              "Content-Type":
-                "application/json",
-              ...corsHeaders
-            }
-          }
+          },
+          500,
+          corsHeaders
         );
+
       }
+
     }
 
 
@@ -594,22 +725,16 @@ export default {
           !amount
         ) {
 
-          return new Response(
-            JSON.stringify({
+          return jsonResponse(
+            {
               ok: false,
               message:
                 "필수 주문 정보가 없습니다."
-            }),
-            {
-              status: 400,
-
-              headers: {
-                "Content-Type":
-                  "application/json",
-                ...corsHeaders
-              }
-            }
+            },
+            400,
+            corsHeaders
           );
+
         }
 
 
@@ -642,22 +767,15 @@ export default {
           .run();
 
 
-        return new Response(
-          JSON.stringify({
+        return jsonResponse(
+          {
             ok: true,
             message:
               "주문이 접수되었습니다.",
             orderId
-          }),
-          {
-            status: 200,
-
-            headers: {
-              "Content-Type":
-                "application/json",
-              ...corsHeaders
-            }
-          }
+          },
+          200,
+          corsHeaders
         );
 
 
@@ -669,23 +787,18 @@ export default {
         );
 
 
-        return new Response(
-          JSON.stringify({
+        return jsonResponse(
+          {
             ok: false,
             message:
               "주문 저장 중 오류가 발생했습니다."
-          }),
-          {
-            status: 500,
-
-            headers: {
-              "Content-Type":
-                "application/json",
-              ...corsHeaders
-            }
-          }
+          },
+          500,
+          corsHeaders
         );
+
       }
+
     }
 
 
@@ -717,22 +830,16 @@ export default {
           !phone
         ) {
 
-          return new Response(
-            JSON.stringify({
+          return jsonResponse(
+            {
               ok: false,
               message:
                 "주문번호와 전화번호를 입력해주세요."
-            }),
-            {
-              status: 400,
-
-              headers: {
-                "Content-Type":
-                  "application/json",
-                ...corsHeaders
-              }
-            }
+            },
+            400,
+            corsHeaders
           );
+
         }
 
 
@@ -763,27 +870,21 @@ export default {
 
         if (!result) {
 
-          return new Response(
-            JSON.stringify({
+          return jsonResponse(
+            {
               ok: false,
               message:
                 "주문 정보를 찾을 수 없습니다."
-            }),
-            {
-              status: 404,
-
-              headers: {
-                "Content-Type":
-                  "application/json",
-                ...corsHeaders
-              }
-            }
+            },
+            404,
+            corsHeaders
           );
+
         }
 
 
-        return new Response(
-          JSON.stringify({
+        return jsonResponse(
+          {
             ok: true,
 
             order: {
@@ -816,17 +917,11 @@ export default {
 
               createdAt:
                 result.created_at
-            }
-          }),
-          {
-            status: 200,
 
-            headers: {
-              "Content-Type":
-                "application/json",
-              ...corsHeaders
             }
-          }
+          },
+          200,
+          corsHeaders
         );
 
 
@@ -838,23 +933,356 @@ export default {
         );
 
 
-        return new Response(
-          JSON.stringify({
+        return jsonResponse(
+          {
             ok: false,
             message:
               "주문 조회 중 오류가 발생했습니다."
-          }),
-          {
-            status: 500,
-
-            headers: {
-              "Content-Type":
-                "application/json",
-              ...corsHeaders
-            }
-          }
+          },
+          500,
+          corsHeaders
         );
+
       }
+
+    }
+
+
+    // =========================
+    // 실시간 배송조회
+    // =========================
+
+    if (
+      url.pathname ===
+      "/api/orders/tracking" &&
+      request.method ===
+      "POST"
+    ) {
+
+      try {
+
+        const data =
+          await request.json();
+
+
+        const {
+          orderId,
+          phone
+        } = data;
+
+
+        if (
+          !orderId ||
+          !phone
+        ) {
+
+          return jsonResponse(
+            {
+              ok: false,
+              message:
+                "주문번호와 전화번호를 입력해주세요."
+            },
+            400,
+            corsHeaders
+          );
+
+        }
+
+
+        const order =
+          await env.DB
+            .prepare(`
+              SELECT
+                order_id,
+                customer_name,
+                phone,
+                carrier,
+                tracking_number,
+                delivery_status
+              FROM orders
+              WHERE order_id = ?
+                AND phone = ?
+              LIMIT 1
+            `)
+            .bind(
+              orderId,
+              phone
+            )
+            .first();
+
+
+        if (!order) {
+
+          return jsonResponse(
+            {
+              ok: false,
+              message:
+                "주문 정보를 찾을 수 없습니다."
+            },
+            404,
+            corsHeaders
+          );
+
+        }
+
+
+        if (
+          !order.carrier ||
+          !order.tracking_number
+        ) {
+
+          return jsonResponse(
+            {
+              ok: true,
+
+              trackingRegistered:
+                false,
+
+              deliveryStatus:
+                order.delivery_status ||
+                "상품준비중"
+            },
+            200,
+            corsHeaders
+          );
+
+        }
+
+
+        if (
+          !env.TAEKBAENET_API_KEY
+        ) {
+
+          return jsonResponse(
+            {
+              ok: false,
+              message:
+                "배송조회 API가 설정되지 않았습니다."
+            },
+            500,
+            corsHeaders
+          );
+
+        }
+
+
+        let tracking;
+
+        try {
+
+          tracking =
+            await getTrackingInfo(
+              order.carrier,
+              order.tracking_number,
+              env.TAEKBAENET_API_KEY
+            );
+
+        } catch (trackingError) {
+
+          console.error(
+            "택배넷 배송조회 오류:",
+            trackingError
+          );
+
+
+          if (
+            trackingError.status === 404
+          ) {
+
+            return jsonResponse(
+              {
+                ok: true,
+
+                trackingRegistered:
+                  true,
+
+                trackingAvailable:
+                  false,
+
+                deliveryStatus:
+                  "운송장 정보 확인 중",
+
+                message:
+                  "아직 택배사에 운송장 정보가 등록되지 않았습니다."
+              },
+              200,
+              corsHeaders
+            );
+
+          }
+
+
+          if (
+            trackingError.status === 503
+          ) {
+
+            return jsonResponse(
+              {
+                ok: true,
+
+                trackingRegistered:
+                  true,
+
+                trackingAvailable:
+                  false,
+
+                deliveryStatus:
+                  order.delivery_status ||
+                  "배송정보 확인 중",
+
+                message:
+                  "택배사 시스템에서 잠시 배송정보를 불러오지 못했습니다."
+              },
+              200,
+              corsHeaders
+            );
+
+          }
+
+
+          return jsonResponse(
+            {
+              ok: false,
+
+              message:
+                "배송정보를 불러오지 못했습니다."
+            },
+            502,
+            corsHeaders
+          );
+
+        }
+
+
+        const deliveryStatus =
+          tracking.status &&
+          tracking.status.label
+            ? tracking.status.label
+            : (
+                order.delivery_status ||
+                "확인 불가"
+              );
+
+
+        const statusCode =
+          tracking.status &&
+          tracking.status.code
+            ? tracking.status.code
+            : "unknown";
+
+
+        const isFinal =
+          !!(
+            tracking.status &&
+            tracking.status.is_final
+          );
+
+
+        const lastEvent =
+          Array.isArray(
+            tracking.events
+          ) &&
+          tracking.events.length > 0
+            ? tracking.events[
+                tracking.events.length - 1
+              ]
+            : null;
+
+
+        // 최신 배송상태를 D1에도 저장
+        await env.DB
+          .prepare(`
+            UPDATE orders
+            SET delivery_status = ?
+            WHERE order_id = ?
+          `)
+          .bind(
+            deliveryStatus,
+            orderId
+          )
+          .run();
+
+
+        return jsonResponse(
+          {
+            ok: true,
+
+            trackingRegistered:
+              true,
+
+            trackingAvailable:
+              true,
+
+            deliveryStatus:
+              deliveryStatus,
+
+            statusCode:
+              statusCode,
+
+            isFinal:
+              isFinal,
+
+            carrier:
+              tracking.carrier
+                ? tracking.carrier.name
+                : order.carrier,
+
+            trackingNumber:
+              tracking.tracking_number ||
+              order.tracking_number,
+
+            lastEventAt:
+              tracking.last_event_at ||
+              tracking.last_event_at_raw ||
+              null,
+
+            lastEvent:
+              lastEvent
+                ? {
+                    statusText:
+                      lastEvent.status_text ||
+                      "",
+
+                    location:
+                      lastEvent.location ||
+                      "",
+
+                    occurredAt:
+                      lastEvent.occurred_at ||
+                      lastEvent.occurred_at_raw ||
+                      null
+                  }
+                : null,
+
+            asOf:
+              tracking.as_of ||
+              null
+          },
+          200,
+          corsHeaders
+        );
+
+
+      } catch (error) {
+
+        console.error(
+          "실시간 배송조회 오류:",
+          error
+        );
+
+
+        return jsonResponse(
+          {
+            ok: false,
+            message:
+              "실시간 배송조회 중 오류가 발생했습니다."
+          },
+          500,
+          corsHeaders
+        );
+
+      }
+
     }
 
 
@@ -875,23 +1303,19 @@ export default {
           env
         );
 
+
       if (!authenticated) {
 
-        return new Response(
-          JSON.stringify({
+        return jsonResponse(
+          {
             ok: false,
             message:
               "관리자 인증이 필요합니다."
-          }),
-          {
-            status: 401,
-            headers: {
-              "Content-Type":
-                "application/json",
-              ...corsHeaders
-            }
-          }
+          },
+          401,
+          corsHeaders
         );
+
       }
 
 
@@ -923,6 +1347,7 @@ export default {
           (result.results || [])
             .map(
               order => ({
+
                 id:
                   order.id,
 
@@ -960,6 +1385,7 @@ export default {
 
                 createdAt:
                   order.created_at
+
               })
             );
 
@@ -990,22 +1416,18 @@ export default {
         );
 
 
-        return new Response(
-          JSON.stringify({
+        return jsonResponse(
+          {
             ok: false,
             message:
               "주문 목록을 불러오지 못했습니다."
-          }),
-          {
-            status: 500,
-            headers: {
-              "Content-Type":
-                "application/json",
-              ...corsHeaders
-            }
-          }
+          },
+          500,
+          corsHeaders
         );
+
       }
+
     }
 
 
@@ -1021,7 +1443,6 @@ export default {
       "POST"
     ) {
 
-
       const authenticated =
         await isAdmin(
           request,
@@ -1031,21 +1452,16 @@ export default {
 
       if (!authenticated) {
 
-        return new Response(
-          JSON.stringify({
+        return jsonResponse(
+          {
             ok: false,
             message:
               "관리자 인증이 필요합니다."
-          }),
-          {
-            status: 401,
-            headers: {
-              "Content-Type":
-                "application/json",
-              ...corsHeaders
-            }
-          }
+          },
+          401,
+          corsHeaders
         );
+
       }
 
 
@@ -1069,22 +1485,16 @@ export default {
           !trackingNumber
         ) {
 
-          return new Response(
-            JSON.stringify({
+          return jsonResponse(
+            {
               ok: false,
               message:
                 "주문번호, 택배사, 송장번호가 필요합니다."
-            }),
-            {
-              status: 400,
-
-              headers: {
-                "Content-Type":
-                  "application/json",
-                ...corsHeaders
-              }
-            }
+            },
+            400,
+            corsHeaders
           );
+
         }
 
 
@@ -1113,40 +1523,27 @@ export default {
           updateResult.meta.changes === 0
         ) {
 
-          return new Response(
-            JSON.stringify({
+          return jsonResponse(
+            {
               ok: false,
               message:
                 "해당 주문을 찾을 수 없습니다."
-            }),
-            {
-              status: 404,
-
-              headers: {
-                "Content-Type":
-                  "application/json",
-                ...corsHeaders
-              }
-            }
+            },
+            404,
+            corsHeaders
           );
+
         }
 
 
-        return new Response(
-          JSON.stringify({
+        return jsonResponse(
+          {
             ok: true,
             message:
               "배송정보가 저장되었습니다."
-          }),
-          {
-            status: 200,
-
-            headers: {
-              "Content-Type":
-                "application/json",
-              ...corsHeaders
-            }
-          }
+          },
+          200,
+          corsHeaders
         );
 
 
@@ -1158,23 +1555,18 @@ export default {
         );
 
 
-        return new Response(
-          JSON.stringify({
+        return jsonResponse(
+          {
             ok: false,
             message:
               "배송정보 저장 중 오류가 발생했습니다."
-          }),
-          {
-            status: 500,
-
-            headers: {
-              "Content-Type":
-                "application/json",
-              ...corsHeaders
-            }
-          }
+          },
+          500,
+          corsHeaders
         );
+
       }
+
     }
 
 
@@ -1202,4 +1594,5 @@ export default {
     );
 
   }
+
 };
