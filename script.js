@@ -573,13 +573,16 @@ paymentBtn.onclick =
         SHIPPING_FEE;
 
 
+      // ==============================
       // 주문번호
+      // ==============================
+
       const orderId =
-        "HYEONMONG_" +
-        crypto
-          .randomUUID()
-          .replace(/-/g, "")
-          .slice(0, 32);
+        "YM-" +
+        Math.random()
+          .toString(36)
+          .substring(2, 8)
+          .toUpperCase();
 
 
       // ==============================
