@@ -409,7 +409,7 @@ closeOrderBtn.onclick = function () {
 
 
 // ==============================
-// Toss Payments 결제
+// 주문 접수 + Toss Payments 결제
 // ==============================
 
 paymentBtn.onclick = async function () {
@@ -462,7 +462,7 @@ paymentBtn.onclick = async function () {
     }
 
 
-    // 총 금액
+    // 상품 금액 계산
     let total = 0;
 
     cart.forEach(item => {
@@ -473,7 +473,90 @@ paymentBtn.onclick = async function () {
     });
 
 
-    // Toss SDK 확인
+    // 최종 결제 금액
+    const finalTotal =
+      total + SHIPPING_FEE;
+
+
+    // 주문번호
+    const orderId =
+      "HYEONMONG_" +
+      crypto
+        .randomUUID()
+        .replace(/-/g, "")
+        .slice(0, 32);
+
+
+    // ==============================
+    // Worker → D1 주문 저장
+    // ==============================
+
+    const response =
+      await fetch(
+        "https://hyeonmong.hyoeunan240.workers.dev/api/orders",
+        {
+          method: "POST",
+
+          headers: {
+            "Content-Type": "application/json"
+          },
+
+          body: JSON.stringify({
+
+            orderId:
+              orderId,
+
+            name:
+              name,
+
+            phone:
+              phone,
+
+            address:
+              address,
+
+            items:
+              cart,
+
+            amount:
+              finalTotal
+
+          })
+        }
+      );
+
+
+    const result =
+      await response.json();
+
+
+    // 주문 저장 실패
+    if (!response.ok || !result.ok) {
+
+      console.error(
+        "주문 저장 오류:",
+        result
+      );
+
+      alert(
+        result.message ||
+        "주문 접수에 실패했습니다."
+      );
+
+      return;
+    }
+
+
+    console.log(
+      "주문 접수 완료:",
+      result
+    );
+
+
+    // ==============================
+    // Toss Payments
+    // ==============================
+
     if (
       typeof TossPayments !==
       "function"
@@ -491,15 +574,6 @@ paymentBtn.onclick = async function () {
     // 테스트용 클라이언트 키
     const clientKey =
       "test_ck_GjLJoQ1aVZKppNdYAdedrw6KYe2R";
-
-
-    // 주문번호
-    const orderId =
-      "HYEONMONG_" +
-      crypto
-        .randomUUID()
-        .replace(/-/g, "")
-        .slice(0, 32);
 
 
     // 고객 키
@@ -552,7 +626,8 @@ paymentBtn.onclick = async function () {
 
         currency: "KRW",
 
-        value: total + SHIPPING_FEE
+        value:
+          finalTotal
 
       },
 
@@ -581,16 +656,17 @@ paymentBtn.onclick = async function () {
 
     });
 
+
   } catch (error) {
 
     console.error(
-      "Toss Payments Error:",
+      "주문/결제 오류:",
       error
     );
 
 
     alert(
-      "결제창을 열 수 없습니다.\n\n" +
+      "주문 처리 중 오류가 발생했습니다.\n\n" +
       (
         error?.message ||
         "알 수 없는 오류"
