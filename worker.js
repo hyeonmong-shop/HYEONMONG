@@ -5,7 +5,7 @@ function getCorsHeaders(request) {
     "https://hyoeunan240-bot.github.io"
   ];
 
-  return {
+  const headers = {
     "Access-Control-Allow-Origin":
       allowedOrigins.includes(origin)
         ? origin
@@ -15,29 +15,320 @@ function getCorsHeaders(request) {
       "GET, POST, OPTIONS",
 
     "Access-Control-Allow-Headers":
-      "Content-Type",
+      "Content-Type, Authorization",
 
     "Access-Control-Max-Age":
       "86400"
   };
+
+  return headers;
+}
+
+
+// =========================
+// 관리자 인증 토큰 생성
+// =========================
+
+async function createAdminToken(secret) {
+
+  const timestamp =
+    Date.now().toString();
+
+  const key =
+    await crypto.subtle.importKey(
+      "raw",
+      new TextEncoder().encode(secret),
+      {
+        name: "HMAC",
+        hash: "SHA-256"
+      },
+      false,
+      ["sign"]
+    );
+
+  const signature =
+    await crypto.subtle.sign(
+      "HMAC",
+      key,
+      new TextEncoder().encode(timestamp)
+    );
+
+  const bytes =
+    new Uint8Array(signature);
+
+  const signatureText =
+    Array.from(bytes)
+      .map(
+        b =>
+          b.toString(16)
+            .padStart(2, "0")
+      )
+      .join("");
+
+  return (
+    timestamp +
+    "." +
+    signatureText
+  );
+}
+
+
+// =========================
+// 관리자 인증 토큰 확인
+// =========================
+
+async function verifyAdminToken(
+  token,
+  secret
+) {
+
+  if (!token || !secret) {
+    return false;
+  }
+
+  const parts =
+    token.split(".");
+
+  if (parts.length !== 2) {
+    return false;
+  }
+
+  const timestamp =
+    parts[0];
+
+  const signature =
+    parts[1];
+
+  const time =
+    Number(timestamp);
+
+  if (!Number.isFinite(time)) {
+    return false;
+  }
+
+  // 관리자 로그인 유효시간 24시간
+  if (
+    Date.now() - time >
+    24 * 60 * 60 * 1000
+  ) {
+    return false;
+  }
+
+  const key =
+    await crypto.subtle.importKey(
+      "raw",
+      new TextEncoder().encode(secret),
+      {
+        name: "HMAC",
+        hash: "SHA-256"
+      },
+      false,
+      ["sign"]
+    );
+
+  const expected =
+    await crypto.subtle.sign(
+      "HMAC",
+      key,
+      new TextEncoder().encode(timestamp)
+    );
+
+  const bytes =
+    new Uint8Array(expected);
+
+  const expectedSignature =
+    Array.from(bytes)
+      .map(
+        b =>
+          b.toString(16)
+            .padStart(2, "0")
+      )
+      .join("");
+
+  return (
+    signature ===
+    expectedSignature
+  );
+}
+
+
+// =========================
+// 관리자 인증 확인
+// =========================
+
+async function isAdmin(
+  request,
+  env
+) {
+
+  const authorization =
+    request.headers.get(
+      "Authorization"
+    ) || "";
+
+  if (
+    !authorization.startsWith(
+      "Bearer "
+    )
+  ) {
+    return false;
+  }
+
+  const token =
+    authorization.slice(7);
+
+  return await verifyAdminToken(
+    token,
+    env.ADMIN_PASSWORD
+  );
 }
 
 
 export default {
-  async fetch(request, env) {
 
-    const url = new URL(request.url);
+  async fetch(
+    request,
+    env
+  ) {
+
+    const url =
+      new URL(request.url);
 
     const corsHeaders =
       getCorsHeaders(request);
 
 
+    // =========================
     // CORS
-    if (request.method === "OPTIONS") {
-      return new Response(null, {
-        status: 204,
-        headers: corsHeaders
-      });
+    // =========================
+
+    if (
+      request.method ===
+      "OPTIONS"
+    ) {
+
+      return new Response(
+        null,
+        {
+          status: 204,
+          headers:
+            corsHeaders
+        }
+      );
+    }
+
+
+    // =========================
+    // 관리자 로그인
+    // =========================
+
+    if (
+      url.pathname ===
+      "/api/admin/login" &&
+      request.method ===
+      "POST"
+    ) {
+
+      try {
+
+        const data =
+          await request.json();
+
+        const password =
+          data.password || "";
+
+        if (
+          !env.ADMIN_PASSWORD
+        ) {
+
+          return new Response(
+            JSON.stringify({
+              ok: false,
+              message:
+                "관리자 비밀번호가 설정되지 않았습니다."
+            }),
+            {
+              status: 500,
+              headers: {
+                "Content-Type":
+                  "application/json",
+                ...corsHeaders
+              }
+            }
+          );
+        }
+
+
+        if (
+          password !==
+          env.ADMIN_PASSWORD
+        ) {
+
+          return new Response(
+            JSON.stringify({
+              ok: false,
+              message:
+                "관리자 비밀번호가 올바르지 않습니다."
+            }),
+            {
+              status: 401,
+              headers: {
+                "Content-Type":
+                  "application/json",
+                ...corsHeaders
+              }
+            }
+          );
+        }
+
+
+        const token =
+          await createAdminToken(
+            env.ADMIN_PASSWORD
+          );
+
+
+        return new Response(
+          JSON.stringify({
+            ok: true,
+            token: token
+          }),
+          {
+            status: 200,
+            headers: {
+              "Content-Type":
+                "application/json",
+              ...corsHeaders,
+              "Cache-Control":
+                "no-store"
+            }
+          }
+        );
+
+
+      } catch (error) {
+
+        console.error(
+          "관리자 로그인 오류:",
+          error
+        );
+
+        return new Response(
+          JSON.stringify({
+            ok: false,
+            message:
+              "관리자 로그인 중 오류가 발생했습니다."
+          }),
+          {
+            status: 500,
+            headers: {
+              "Content-Type":
+                "application/json",
+              ...corsHeaders
+            }
+          }
+        );
+      }
     }
 
 
@@ -46,8 +337,10 @@ export default {
     // =========================
 
     if (
-      url.pathname === "/api/secret-status" &&
-      request.method === "GET"
+      url.pathname ===
+      "/api/secret-status" &&
+      request.method ===
+      "GET"
     ) {
 
       return new Response(
@@ -73,8 +366,10 @@ export default {
     // =========================
 
     if (
-      url.pathname === "/api/payments/confirm" &&
-      request.method === "POST"
+      url.pathname ===
+      "/api/payments/confirm" &&
+      request.method ===
+      "POST"
     ) {
 
       try {
@@ -138,7 +433,9 @@ export default {
 
 
         const auth =
-          btoa(secretKey + ":");
+          btoa(
+            secretKey + ":"
+          );
 
 
         const tossResponse =
@@ -155,12 +452,13 @@ export default {
                   "application/json"
               },
 
-              body: JSON.stringify({
-                paymentKey,
-                orderId,
-                amount:
-                  Number(amount)
-              })
+              body:
+                JSON.stringify({
+                  paymentKey,
+                  orderId,
+                  amount:
+                    Number(amount)
+                })
             }
           );
 
@@ -169,7 +467,9 @@ export default {
           await tossResponse.json();
 
 
-        if (!tossResponse.ok) {
+        if (
+          !tossResponse.ok
+        ) {
 
           console.error(
             "Toss 결제 승인 실패:",
@@ -263,8 +563,10 @@ export default {
     // =========================
 
     if (
-      url.pathname === "/api/orders" &&
-      request.method === "POST"
+      url.pathname ===
+      "/api/orders" &&
+      request.method ===
+      "POST"
     ) {
 
       try {
@@ -389,12 +691,13 @@ export default {
 
     // =========================
     // 고객 주문 조회
-    // 주문번호 + 전화번호
     // =========================
 
     if (
-      url.pathname === "/api/orders/lookup" &&
-      request.method === "POST"
+      url.pathname ===
+      "/api/orders/lookup" &&
+      request.method ===
+      "POST"
     ) {
 
       try {
@@ -484,6 +787,7 @@ export default {
             ok: true,
 
             order: {
+
               orderId:
                 result.order_id,
 
@@ -555,14 +859,195 @@ export default {
 
 
     // =========================
-    // 배송정보 등록
-    // 관리자용
+    // 관리자 주문 목록
     // =========================
 
     if (
-      url.pathname === "/api/orders/shipping" &&
-      request.method === "POST"
+      url.pathname ===
+      "/api/admin/orders" &&
+      request.method ===
+      "GET"
     ) {
+
+      const authenticated =
+        await isAdmin(
+          request,
+          env
+        );
+
+      if (!authenticated) {
+
+        return new Response(
+          JSON.stringify({
+            ok: false,
+            message:
+              "관리자 인증이 필요합니다."
+          }),
+          {
+            status: 401,
+            headers: {
+              "Content-Type":
+                "application/json",
+              ...corsHeaders
+            }
+          }
+        );
+      }
+
+
+      try {
+
+        const result =
+          await env.DB
+            .prepare(`
+              SELECT
+                id,
+                order_id,
+                customer_name,
+                phone,
+                address,
+                items_json,
+                amount,
+                status,
+                carrier,
+                tracking_number,
+                delivery_status,
+                created_at
+              FROM orders
+              ORDER BY id DESC
+            `)
+            .all();
+
+
+        const orders =
+          (result.results || [])
+            .map(
+              order => ({
+                id:
+                  order.id,
+
+                orderId:
+                  order.order_id,
+
+                customerName:
+                  order.customer_name,
+
+                phone:
+                  order.phone,
+
+                address:
+                  order.address,
+
+                items:
+                  JSON.parse(
+                    order.items_json
+                  ),
+
+                amount:
+                  order.amount,
+
+                status:
+                  order.status,
+
+                carrier:
+                  order.carrier,
+
+                trackingNumber:
+                  order.tracking_number,
+
+                deliveryStatus:
+                  order.delivery_status,
+
+                createdAt:
+                  order.created_at
+              })
+            );
+
+
+        return new Response(
+          JSON.stringify({
+            ok: true,
+            orders
+          }),
+          {
+            status: 200,
+            headers: {
+              "Content-Type":
+                "application/json",
+              ...corsHeaders,
+              "Cache-Control":
+                "no-store"
+            }
+          }
+        );
+
+
+      } catch (error) {
+
+        console.error(
+          "관리자 주문 조회 오류:",
+          error
+        );
+
+
+        return new Response(
+          JSON.stringify({
+            ok: false,
+            message:
+              "주문 목록을 불러오지 못했습니다."
+          }),
+          {
+            status: 500,
+            headers: {
+              "Content-Type":
+                "application/json",
+              ...corsHeaders
+            }
+          }
+        );
+      }
+    }
+
+
+    // =========================
+    // 배송정보 등록
+    // 관리자 전용
+    // =========================
+
+    if (
+      url.pathname ===
+      "/api/orders/shipping" &&
+      request.method ===
+      "POST"
+    ) {
+
+
+      const authenticated =
+        await isAdmin(
+          request,
+          env
+        );
+
+
+      if (!authenticated) {
+
+        return new Response(
+          JSON.stringify({
+            ok: false,
+            message:
+              "관리자 인증이 필요합니다."
+          }),
+          {
+            status: 401,
+            headers: {
+              "Content-Type":
+                "application/json",
+              ...corsHeaders
+            }
+          }
+        );
+      }
+
 
       try {
 
@@ -603,23 +1088,48 @@ export default {
         }
 
 
-        await env.DB
-          .prepare(`
-            UPDATE orders
-            SET
-              carrier = ?,
-              tracking_number = ?,
-              delivery_status = ?
-            WHERE order_id = ?
-          `)
-          .bind(
-            carrier,
-            trackingNumber,
-            deliveryStatus ||
-              "상품준비중",
-            orderId
-          )
-          .run();
+        const updateResult =
+          await env.DB
+            .prepare(`
+              UPDATE orders
+              SET
+                carrier = ?,
+                tracking_number = ?,
+                delivery_status = ?
+              WHERE order_id = ?
+            `)
+            .bind(
+              carrier,
+              trackingNumber,
+              deliveryStatus ||
+                "상품준비중",
+              orderId
+            )
+            .run();
+
+
+        if (
+          !updateResult.meta ||
+          updateResult.meta.changes === 0
+        ) {
+
+          return new Response(
+            JSON.stringify({
+              ok: false,
+              message:
+                "해당 주문을 찾을 수 없습니다."
+            }),
+            {
+              status: 404,
+
+              headers: {
+                "Content-Type":
+                  "application/json",
+                ...corsHeaders
+              }
+            }
+          );
+        }
 
 
         return new Response(
