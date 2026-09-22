@@ -12,7 +12,7 @@ function getCorsHeaders(request) {
         : "https://hyoeunan240-bot.github.io",
 
     "Access-Control-Allow-Methods":
-      "POST, OPTIONS",
+      "GET, POST, OPTIONS",
 
     "Access-Control-Allow-Headers":
       "Content-Type",
@@ -44,6 +44,35 @@ export default {
         headers: corsHeaders
       });
 
+    }
+
+
+    // ==============================
+    // Secret Key 설정 여부 확인
+    // ==============================
+
+    if (
+      url.pathname === "/api/secret-status" &&
+      request.method === "GET"
+    ) {
+
+      return new Response(
+        JSON.stringify({
+          ok: true,
+          secretConfigured:
+            !!env.TOSS_SECRET_KEY
+        }),
+        {
+          status: 200,
+
+          headers: {
+            "Content-Type":
+              "application/json",
+
+            ...corsHeaders
+          }
+        }
+      );
     }
 
 
