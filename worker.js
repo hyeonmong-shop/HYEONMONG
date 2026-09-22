@@ -1,11 +1,33 @@
+const corsHeaders = {
+  "Access-Control-Allow-Origin": "https://hyoeunan240-bot.github.io",
+  "Access-Control-Allow-Methods": "POST, OPTIONS",
+  "Access-Control-Allow-Headers": "Content-Type"
+};
+
 export default {
   async fetch(request, env) {
+
     const url = new URL(request.url);
 
+    // CORS 사전 요청 처리
+    if (request.method === "OPTIONS") {
+      return new Response(null, {
+        headers: corsHeaders
+      });
+    }
+
+
     // 주문 접수
-    if (url.pathname === "/api/orders" && request.method === "POST") {
+    if (
+      url.pathname === "/api/orders" &&
+      request.method === "POST"
+    ) {
+
       try {
-        const data = await request.json();
+
+        const data =
+          await request.json();
+
 
         const {
           orderId,
@@ -16,6 +38,7 @@ export default {
           amount
         } = data;
 
+
         // 필수값 확인
         if (
           !orderId ||
@@ -25,6 +48,7 @@ export default {
           !items ||
           !amount
         ) {
+
           return new Response(
             JSON.stringify({
               ok: false,
@@ -33,11 +57,13 @@ export default {
             {
               status: 400,
               headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
+                ...corsHeaders
               }
             }
           );
         }
+
 
         // D1에 주문 저장
         await env.DB.prepare(`
@@ -65,6 +91,7 @@ export default {
           )
           .run();
 
+
         return new Response(
           JSON.stringify({
             ok: true,
@@ -73,12 +100,15 @@ export default {
           }),
           {
             headers: {
-              "Content-Type": "application/json"
+              "Content-Type": "application/json",
+              ...corsHeaders
             }
           }
         );
 
+
       } catch (error) {
+
         return new Response(
           JSON.stringify({
             ok: false,
@@ -88,12 +118,14 @@ export default {
           {
             status: 500,
             headers: {
-              "Content-Type": "application/json"
+              "Content-Type": "application/json",
+              ...corsHeaders
             }
           }
         );
       }
     }
+
 
     // 기본 Worker 응답
     return new Response(
@@ -104,7 +136,8 @@ export default {
       }),
       {
         headers: {
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
+          ...corsHeaders
         }
       }
     );
