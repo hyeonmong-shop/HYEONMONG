@@ -16,6 +16,7 @@
     rel="stylesheet"
     href="style.css"
   >
+
   <script src="https://js.tosspayments.com/v2/standard"></script>
 
   <link
@@ -54,19 +55,47 @@
     </a>
 
 
-    <button
-      class="cart-btn"
-      id="open-cart"
-      type="button"
+    <div
+      style="
+        display:flex;
+        align-items:center;
+        gap:8px;
+      "
     >
 
-      장바구니
+      <!-- 주문조회 -->
 
-      <span id="cart-count">
-        0
-      </span>
+      <a
+        href="order.html"
+        class="cart-btn"
+        style="
+          text-decoration:none;
+          display:inline-flex;
+          align-items:center;
+          justify-content:center;
+        "
+      >
+        주문조회
+      </a>
 
-    </button>
+
+      <!-- 장바구니 -->
+
+      <button
+        class="cart-btn"
+        id="open-cart"
+        type="button"
+      >
+
+        장바구니
+
+        <span id="cart-count">
+          0
+        </span>
+
+      </button>
+
+    </div>
 
   </header>
 
@@ -483,7 +512,7 @@
 
   <script src="https://js.tosspayments.com/v2/standard"></script>
 
-<script src="script.js?v=20260922-2"></script>
+  <script src="script.js?v=20260922-2"></script>
 
 </body>
 
