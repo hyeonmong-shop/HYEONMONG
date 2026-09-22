@@ -1,3 +1,7 @@
+name = "hyeonmong"
+main = "worker.js"
+compatibility_date = "2026-09-22"
+
 [[d1_databases]]
 binding = "DB"
 database_name = "hyeonmong-orders"
