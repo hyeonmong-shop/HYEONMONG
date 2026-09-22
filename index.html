@@ -26,7 +26,7 @@
 
   <link
     rel="preconnect"
-    href="https://fonts.gstatic.com"
+    href="https://fonts.googleapis.com"
     crossorigin
   >
 
@@ -38,6 +38,7 @@
 </head>
 
 <body>
+
 
   <!-- =========================
        HEADER
@@ -52,6 +53,7 @@
       永夢
     </a>
 
+
     <div
       style="
         display:flex;
@@ -59,8 +61,6 @@
         gap:8px;
       "
     >
-
-      <!-- 주문조회 -->
 
       <a
         href="order.html"
@@ -75,7 +75,6 @@
         주문조회
       </a>
 
-      <!-- 장바구니 -->
 
       <button
         class="cart-btn"
@@ -95,23 +94,60 @@
 
   </header>
 
+
+
   <!-- =========================
        HERO
   ========================== -->
 
   <section class="hero">
 
-    <p class="hero-symbol">
-      永夢
-    </p>
-
     <h1>
       永 夢
     </h1>
 
-    <p>
+
+    <p
+      style="
+        margin:18px 0 0;
+        font-family:'Noto Serif KR', serif;
+        font-size:14px;
+        font-weight:300;
+        color:inherit;
+        line-height:1.8;
+      "
+    >
+      ㅡ
+    </p>
+
+
+    <p
+      style="
+        margin:4px 0;
+        font-family:'Noto Serif KR', serif;
+        font-size:14px;
+        font-weight:300;
+        color:inherit;
+        line-height:1.8;
+      "
+    >
       몽환과 유랑이 머무는 공간
     </p>
+
+
+    <p
+      style="
+        margin:4px 0 0;
+        font-family:'Noto Serif KR', serif;
+        font-size:14px;
+        font-weight:300;
+        color:inherit;
+        line-height:1.8;
+      "
+    >
+      ㅡ
+    </p>
+
 
     <a
       href="#collection"
@@ -121,6 +157,8 @@
     </a>
 
   </section>
+
+
 
   <!-- =========================
        COLLECTION
@@ -135,9 +173,11 @@
       HYEONMONG OBJECT
     </p>
 
+
     <h2 class="section-title">
       COLLECTION
     </h2>
+
 
     <div
       class="product-grid"
@@ -150,6 +190,8 @@
 
   </main>
 
+
+
   <!-- =========================
        PRODUCT DETAIL
   ========================== -->
@@ -161,6 +203,7 @@
 
     <div class="modal-content">
 
+
       <button
         class="close-btn"
         id="close-detail"
@@ -169,7 +212,9 @@
         &times;
       </button>
 
+
       <div class="detail-body">
+
 
         <img
           id="detail-img"
@@ -177,15 +222,19 @@
           alt="流浪 핑크 라이터"
         >
 
+
         <div class="detail-info">
+
 
           <p class="product-category">
             HYEONMONG / LIGHTER
           </p>
 
+
           <h2 id="detail-title">
             流浪 핑크 라이터
           </h2>
+
 
           <p
             class="detail-price"
@@ -193,6 +242,7 @@
           >
             5,000원
           </p>
+
 
           <p
             class="detail-desc"
@@ -202,6 +252,7 @@
             영몽의 감성을 담았습니다.
           </p>
 
+
           <button
             class="primary-btn"
             id="add-to-cart-btn"
@@ -210,6 +261,7 @@
             장바구니 담기
           </button>
 
+
         </div>
 
       </div>
@@ -217,6 +269,8 @@
     </div>
 
   </div>
+
+
 
   <!-- =========================
        CART
@@ -229,7 +283,9 @@
 
     <div class="cart-content">
 
+
       <div class="cart-header">
+
 
         <div>
 
@@ -237,11 +293,13 @@
             HYEONMONG
           </p>
 
+
           <h2>
             장바구니
           </h2>
 
         </div>
+
 
         <button
           class="close-btn"
@@ -251,7 +309,10 @@
           &times;
         </button>
 
+
       </div>
+
+
 
       <div
         class="cart-items"
@@ -260,7 +321,10 @@
 
       </div>
 
+
+
       <div class="cart-footer">
+
 
         <div class="cart-total">
 
@@ -268,11 +332,13 @@
             총 상품금액
           </span>
 
+
           <strong id="cart-total-price">
             0원
           </strong>
 
         </div>
+
 
         <button
           class="primary-btn"
@@ -282,11 +348,14 @@
           주문하기
         </button>
 
+
       </div>
 
     </div>
 
   </div>
+
+
 
   <!-- =========================
        ORDER
@@ -299,7 +368,9 @@
 
     <div class="cart-content">
 
+
       <div class="cart-header">
+
 
         <div>
 
@@ -307,11 +378,13 @@
             HYEONMONG
           </p>
 
+
           <h2>
             주문하기
           </h2>
 
         </div>
+
 
         <button
           class="close-btn"
@@ -323,6 +396,8 @@
 
       </div>
 
+
+
       <!-- 주문자 정보 -->
 
       <div
@@ -331,9 +406,11 @@
         "
       >
 
+
         <label>
           이름
         </label>
+
 
         <input
           id="order-name"
@@ -349,9 +426,12 @@
           "
         >
 
+
+
         <label>
           연락처
         </label>
+
 
         <input
           id="order-phone"
@@ -367,9 +447,12 @@
           "
         >
 
+
+
         <label>
           배송지
         </label>
+
 
         <input
           id="order-address"
@@ -386,9 +469,12 @@
 
       </div>
 
+
+
       <!-- 주문 금액 -->
 
       <div class="cart-footer">
+
 
         <div class="cart-total">
 
@@ -396,11 +482,13 @@
             결제 예정 금액
           </span>
 
+
           <strong id="order-total">
             0원
           </strong>
 
         </div>
+
 
         <button
           class="primary-btn"
@@ -410,11 +498,14 @@
           결제하기
         </button>
 
+
       </div>
 
     </div>
 
   </div>
+
+
 
   <!-- =========================
        FOOTER
@@ -422,19 +513,109 @@
 
   <footer class="footer">
 
-    <div class="footer-logo">
-      永夢
-    </div>
 
     <p>
       영원한 꿈을 담다.
     </p>
 
+
+    <nav
+      style="
+        margin:18px 0;
+        display:flex;
+        justify-content:center;
+        align-items:center;
+        flex-wrap:wrap;
+        gap:8px;
+        font-size:12px;
+      "
+    >
+
+      <a
+        href="terms.html"
+        style="
+          color:inherit;
+          text-decoration:none;
+        "
+      >
+        이용약관
+      </a>
+
+
+      <span style="color:#bbb;">
+        |
+      </span>
+
+
+      <a
+        href="privacy.html"
+        style="
+          color:inherit;
+          text-decoration:none;
+        "
+      >
+        개인정보처리방침
+      </a>
+
+
+      <span style="color:#bbb;">
+        |
+      </span>
+
+
+      <a
+        href="shipping.html"
+        style="
+          color:inherit;
+          text-decoration:none;
+        "
+      >
+        배송 안내
+      </a>
+
+
+      <span style="color:#bbb;">
+        |
+      </span>
+
+
+      <a
+        href="refund.html"
+        style="
+          color:inherit;
+          text-decoration:none;
+        "
+      >
+        교환·환불 안내
+      </a>
+
+
+      <span style="color:#bbb;">
+        |
+      </span>
+
+
+      <a
+        href="contact.html"
+        style="
+          color:inherit;
+          text-decoration:none;
+        "
+      >
+        문의
+      </a>
+
+    </nav>
+
+
     <small>
       © 2026 HYEONMONG
     </small>
 
+
   </footer>
+
+
 
   <!-- =========================
        JAVASCRIPT
@@ -443,6 +624,7 @@
   <script src="https://js.tosspayments.com/v2/standard"></script>
 
   <script src="script.js?v=20260922-2"></script>
+
 
 </body>
 
