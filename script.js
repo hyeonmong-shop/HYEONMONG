@@ -12,6 +12,7 @@ const products = [
     desc: "동양적인 무드와 몽환적인 핑크빛을 담은 영몽(永夢)의 시그니처 流浪 라이터입니다."
   }
 ];
+
 const SHIPPING_FEE = 2000;
 
 
@@ -30,21 +31,41 @@ let selectedProduct = null;
 // 요소
 // ==============================
 
-const productGrid = document.getElementById("product-grid");
+const productGrid =
+  document.getElementById("product-grid");
 
-const detailModal = document.getElementById("detail-modal");
-const cartModal = document.getElementById("cart-modal");
-const orderModal = document.getElementById("order-modal");
+const detailModal =
+  document.getElementById("detail-modal");
 
-const openCartBtn = document.getElementById("open-cart");
-const closeDetailBtn = document.getElementById("close-detail");
-const closeCartBtn = document.getElementById("close-cart");
-const closeOrderBtn = document.getElementById("close-order");
+const cartModal =
+  document.getElementById("cart-modal");
 
-const detailImg = document.getElementById("detail-img");
-const detailTitle = document.getElementById("detail-title");
-const detailPrice = document.getElementById("detail-price");
-const detailDesc = document.getElementById("detail-desc");
+const orderModal =
+  document.getElementById("order-modal");
+
+const openCartBtn =
+  document.getElementById("open-cart");
+
+const closeDetailBtn =
+  document.getElementById("close-detail");
+
+const closeCartBtn =
+  document.getElementById("close-cart");
+
+const closeOrderBtn =
+  document.getElementById("close-order");
+
+const detailImg =
+  document.getElementById("detail-img");
+
+const detailTitle =
+  document.getElementById("detail-title");
+
+const detailPrice =
+  document.getElementById("detail-price");
+
+const detailDesc =
+  document.getElementById("detail-desc");
 
 const addToCartBtn =
   document.getElementById("add-to-cart-btn");
@@ -78,9 +99,11 @@ function renderProducts() {
 
   products.forEach(product => {
 
-    const card = document.createElement("article");
+    const card =
+      document.createElement("article");
 
-    card.className = "product-card";
+    card.className =
+      "product-card";
 
     card.innerHTML = `
       <button
@@ -127,8 +150,11 @@ function openDetail(product) {
 
   selectedProduct = product;
 
-  detailImg.src = product.image;
-  detailImg.alt = product.name;
+  detailImg.src =
+    product.image;
+
+  detailImg.alt =
+    product.name;
 
   detailTitle.textContent =
     product.name;
@@ -141,7 +167,8 @@ function openDetail(product) {
 
   detailModal.classList.add("active");
 
-  document.body.style.overflow = "hidden";
+  document.body.style.overflow =
+    "hidden";
 }
 
 
@@ -153,9 +180,11 @@ addToCartBtn.onclick = function () {
 
   if (!selectedProduct) return;
 
-  const existing = cart.find(
-    item => item.id === selectedProduct.id
-  );
+  const existing =
+    cart.find(
+      item =>
+        item.id === selectedProduct.id
+    );
 
   if (existing) {
 
@@ -178,7 +207,8 @@ addToCartBtn.onclick = function () {
 
   cartModal.classList.add("active");
 
-  document.body.style.overflow = "hidden";
+  document.body.style.overflow =
+    "hidden";
 };
 
 
@@ -210,12 +240,17 @@ function renderCart() {
 
   cart.forEach(item => {
 
-    total += item.price * item.quantity;
-    count += item.quantity;
+    total +=
+      item.price * item.quantity;
 
-    const row = document.createElement("div");
+    count +=
+      item.quantity;
 
-    row.className = "cart-item";
+    const row =
+      document.createElement("div");
+
+    row.className =
+      "cart-item";
 
     row.innerHTML = `
       <div class="cart-item-info">
@@ -272,16 +307,16 @@ function renderCart() {
     `;
   }
 
-  cartCount.textContent = count;
+  cartCount.textContent =
+    count;
 
   const finalTotal =
-  cart.length > 0
-    ? total + SHIPPING_FEE
-    : 0;
+    cart.length > 0
+      ? total + SHIPPING_FEE
+      : 0;
 
-
-cartTotal.textContent =
-  finalTotal.toLocaleString() + "원";
+  cartTotal.textContent =
+    finalTotal.toLocaleString() + "원";
 }
 
 
@@ -289,430 +324,560 @@ cartTotal.textContent =
 // 수량 변경
 // ==============================
 
-window.changeQuantity = function (id, amount) {
+window.changeQuantity =
+  function (id, amount) {
 
-  const item = cart.find(
-    item => item.id === id
-  );
+    const item =
+      cart.find(
+        item => item.id === id
+      );
 
-  if (!item) return;
+    if (!item) return;
 
-  item.quantity += amount;
+    item.quantity += amount;
 
-  if (item.quantity <= 0) {
+    if (item.quantity <= 0) {
 
-    cart = cart.filter(
-      item => item.id !== id
-    );
-  }
+      cart =
+        cart.filter(
+          item => item.id !== id
+        );
+    }
 
-  saveCart();
-};
+    saveCart();
+  };
 
 
 // ==============================
 // 상품 삭제
 // ==============================
 
-window.deleteItem = function (id) {
+window.deleteItem =
+  function (id) {
 
-  cart = cart.filter(
-    item => item.id !== id
-  );
+    cart =
+      cart.filter(
+        item => item.id !== id
+      );
 
-  saveCart();
-};
+    saveCart();
+  };
 
 
 // ==============================
 // 장바구니 열기
 // ==============================
 
-openCartBtn.onclick = function () {
+openCartBtn.onclick =
+  function () {
 
-  renderCart();
+    renderCart();
 
-  cartModal.classList.add("active");
+    cartModal.classList.add(
+      "active"
+    );
 
-  document.body.style.overflow = "hidden";
-};
+    document.body.style.overflow =
+      "hidden";
+  };
 
 
 // ==============================
 // 장바구니 닫기
 // ==============================
 
-closeCartBtn.onclick = function () {
+closeCartBtn.onclick =
+  function () {
 
-  cartModal.classList.remove("active");
+    cartModal.classList.remove(
+      "active"
+    );
 
-  document.body.style.overflow = "";
-};
+    document.body.style.overflow =
+      "";
+  };
 
 
 // ==============================
 // 상품 상세 닫기
 // ==============================
 
-closeDetailBtn.onclick = function () {
+closeDetailBtn.onclick =
+  function () {
 
-  detailModal.classList.remove("active");
+    detailModal.classList.remove(
+      "active"
+    );
 
-  document.body.style.overflow = "";
-};
+    document.body.style.overflow =
+      "";
+  };
 
 
 // ==============================
 // 주문하기
 // ==============================
 
-checkoutBtn.onclick = function () {
+checkoutBtn.onclick =
+  function () {
 
-  if (cart.length === 0) {
+    if (cart.length === 0) {
 
-    alert("장바구니가 비어 있습니다.");
+      alert(
+        "장바구니가 비어 있습니다."
+      );
 
-    return;
-  }
+      return;
+    }
 
-  let total = 0;
+    let total = 0;
 
-  cart.forEach(item => {
+    cart.forEach(item => {
 
-    total += item.price * item.quantity;
-  });
+      total +=
+        item.price *
+        item.quantity;
 
-  const finalTotal =
-  total + SHIPPING_FEE;
+    });
 
-orderTotal.textContent =
-  finalTotal.toLocaleString() + "원";
+    const finalTotal =
+      total +
+      SHIPPING_FEE;
 
-  cartModal.classList.remove("active");
+    orderTotal.textContent =
+      finalTotal.toLocaleString() +
+      "원";
 
-  orderModal.classList.add("active");
+    cartModal.classList.remove(
+      "active"
+    );
 
-  document.body.style.overflow = "hidden";
-};
+    orderModal.classList.add(
+      "active"
+    );
+
+    document.body.style.overflow =
+      "hidden";
+  };
 
 
 // ==============================
 // 주문창 닫기
 // ==============================
 
-closeOrderBtn.onclick = function () {
+closeOrderBtn.onclick =
+  function () {
 
-  orderModal.classList.remove("active");
+    orderModal.classList.remove(
+      "active"
+    );
 
-  document.body.style.overflow = "";
-};
+    document.body.style.overflow =
+      "";
+  };
 
 
 // ==============================
 // 주문 접수 + Toss Payments 결제
 // ==============================
 
-paymentBtn.onclick = async function () {
+paymentBtn.onclick =
+  async function () {
 
-  try {
+    try {
 
-    const name =
-      document.getElementById("order-name").value.trim();
+      const name =
+        document
+          .getElementById(
+            "order-name"
+          )
+          .value
+          .trim();
 
-    const phone =
-      document.getElementById("order-phone").value.trim();
+      const phone =
+        document
+          .getElementById(
+            "order-phone"
+          )
+          .value
+          .trim();
 
-    const address =
-      document.getElementById("order-address").value.trim();
-
-
-    // 이름 확인
-    if (!name) {
-
-      alert("이름을 입력해주세요.");
-
-      return;
-    }
-
-
-    // 연락처 확인
-    if (!phone) {
-
-      alert("연락처를 입력해주세요.");
-
-      return;
-    }
+      const address =
+        document
+          .getElementById(
+            "order-address"
+          )
+          .value
+          .trim();
 
 
-    // 배송지 확인
-    if (!address) {
+      // 이름 확인
+      if (!name) {
 
-      alert("배송지를 입력해주세요.");
+        alert(
+          "이름을 입력해주세요."
+        );
 
-      return;
-    }
-
-
-    // 장바구니 확인
-    if (cart.length === 0) {
-
-      alert("장바구니가 비어 있습니다.");
-
-      return;
-    }
+        return;
+      }
 
 
-    // 상품 금액 계산
-    let total = 0;
+      // 연락처 확인
+      if (!phone) {
 
-    cart.forEach(item => {
+        alert(
+          "연락처를 입력해주세요."
+        );
 
-      total +=
-        item.price * item.quantity;
-
-    });
-
-
-    // 최종 결제 금액
-    const finalTotal =
-      total + SHIPPING_FEE;
+        return;
+      }
 
 
-    // 주문번호
-    const orderId =
-      "HYEONMONG_" +
-      crypto
-        .randomUUID()
-        .replace(/-/g, "")
-        .slice(0, 32);
+      // 배송지 확인
+      if (!address) {
+
+        alert(
+          "배송지를 입력해주세요."
+        );
+
+        return;
+      }
 
 
-    // ==============================
-    // Worker → D1 주문 저장
-    // ==============================
+      // 장바구니 확인
+      if (cart.length === 0) {
 
-    const response =
-      await fetch(
-        "https://hyeonmong.hyoeunan240.workers.dev/api/orders",
+        alert(
+          "장바구니가 비어 있습니다."
+        );
+
+        return;
+      }
+
+
+      // 상품 금액 계산
+      let total = 0;
+
+      cart.forEach(item => {
+
+        total +=
+          item.price *
+          item.quantity;
+
+      });
+
+
+      // 최종 결제 금액
+      const finalTotal =
+        total +
+        SHIPPING_FEE;
+
+
+      // 주문번호
+      const orderId =
+        "HYEONMONG_" +
+        crypto
+          .randomUUID()
+          .replace(/-/g, "")
+          .slice(0, 32);
+
+
+      // ==============================
+      // Worker → D1 주문 저장
+      // ==============================
+
+      console.log(
+        "주문 API 요청 시작"
+      );
+
+      console.log(
+        "주문 데이터:",
         {
-          method: "POST",
-
-          headers: {
-            "Content-Type": "application/json"
-          },
-
-          body: JSON.stringify({
-
-            orderId:
-              orderId,
-
-            name:
-              name,
-
-            phone:
-              phone,
-
-            address:
-              address,
-
-            items:
-              cart,
-
-            amount:
-              finalTotal
-
-          })
+          orderId,
+          name,
+          phone,
+          address,
+          items: cart,
+          amount: finalTotal
         }
       );
 
 
-    const result =
-      await response.json();
+      const response =
+        await fetch(
+          "https://hyeonmong.hyoeunan240.workers.dev/api/orders",
+          {
+            method: "POST",
+
+            headers: {
+              "Content-Type":
+                "application/json"
+            },
+
+            body:
+              JSON.stringify({
+
+                orderId:
+                  orderId,
+
+                name:
+                  name,
+
+                phone:
+                  phone,
+
+                address:
+                  address,
+
+                items:
+                  cart,
+
+                amount:
+                  finalTotal
+
+              })
+          }
+        );
 
 
-    // 주문 저장 실패
-    if (!response.ok || !result.ok) {
+      console.log(
+        "주문 API 응답:",
+        response.status
+      );
 
-      console.error(
-        "주문 저장 오류:",
+
+      const result =
+        await response.json();
+
+
+      console.log(
+        "주문 API 결과:",
         result
       );
 
-      alert(
-        result.message ||
-        "주문 접수에 실패했습니다."
+
+      // 주문 저장 실패
+      if (
+        !response.ok ||
+        !result.ok
+      ) {
+
+        console.error(
+          "주문 저장 오류:",
+          result
+        );
+
+        alert(
+          result.message ||
+          "주문 접수에 실패했습니다."
+        );
+
+        return;
+      }
+
+
+      console.log(
+        "주문 접수 완료:",
+        result
       );
 
-      return;
-    }
+
+      // ==============================
+      // Toss Payments
+      // ==============================
+
+      if (
+        typeof TossPayments !==
+        "function"
+      ) {
+
+        alert(
+          "결제 모듈을 불러오지 못했습니다.\n" +
+          "페이지를 새로고침한 후 다시 시도해주세요."
+        );
+
+        return;
+      }
 
 
-    console.log(
-      "주문 접수 완료:",
-      result
-    );
+      // 테스트용 클라이언트 키
+      const clientKey =
+        "test_ck_GjLJoQ1aVZKppNdYAdedrw6KYe2R";
 
 
-    // ==============================
-    // Toss Payments
-    // ==============================
-
-    if (
-      typeof TossPayments !==
-      "function"
-    ) {
-
-      alert(
-        "결제 모듈을 불러오지 못했습니다.\n" +
-        "페이지를 새로고침한 후 다시 시도해주세요."
-      );
-
-      return;
-    }
+      // 고객 키
+      const customerKey =
+        "HYEONMONG_" +
+        crypto
+          .randomUUID()
+          .replace(/-/g, "")
+          .slice(0, 32);
 
 
-    // 테스트용 클라이언트 키
-    const clientKey =
-      "test_ck_GjLJoQ1aVZKppNdYAdedrw6KYe2R";
+      // Toss Payments 생성
+      const tossPayments =
+        TossPayments(
+          clientKey
+        );
 
 
-    // 고객 키
-    const customerKey =
-      "HYEONMONG_" +
-      crypto
-        .randomUUID()
-        .replace(/-/g, "")
-        .slice(0, 32);
+      // 결제 객체
+      const payment =
+        tossPayments.payment({
+          customerKey:
+            customerKey
+        });
 
 
-    // Toss Payments 생성
-    const tossPayments =
-      TossPayments(clientKey);
+      // 주문명
+      let orderName;
+
+      if (cart.length === 1) {
+
+        orderName =
+          cart[0].name;
+
+      } else {
+
+        orderName =
+          cart[0].name +
+          " 외 " +
+          (cart.length - 1) +
+          "건";
+
+      }
 
 
-    // 결제 객체
-    const payment =
-      tossPayments.payment({
-        customerKey:
-          customerKey
+      // 결제창 열기
+      await payment.requestPayment({
+
+        method:
+          "CARD",
+
+        amount: {
+
+          currency:
+            "KRW",
+
+          value:
+            finalTotal
+
+        },
+
+        orderId:
+          orderId,
+
+        orderName:
+          orderName,
+
+        customerName:
+          name,
+
+        customerMobilePhone:
+          phone.replace(
+            /[^0-9]/g,
+            ""
+          ),
+
+        successUrl:
+          window.location.origin +
+          "/HYEONMONG/success.html",
+
+        failUrl:
+          window.location.origin +
+          "/HYEONMONG/fail.html"
+
       });
 
 
-    // 주문명
-    let orderName;
+    } catch (error) {
 
-    if (cart.length === 1) {
+      console.error(
+        "주문/결제 오류:",
+        error
+      );
 
-      orderName =
-        cart[0].name;
 
-    } else {
+      console.error(
+        "오류 이름:",
+        error?.name
+      );
 
-      orderName =
-        cart[0].name +
-        " 외 " +
-        (cart.length - 1) +
-        "건";
+      console.error(
+        "오류 메시지:",
+        error?.message
+      );
+
+
+      alert(
+        "주문 처리 중 오류가 발생했습니다.\n\n" +
+        (
+          error?.message ||
+          "알 수 없는 오류"
+        )
+      );
 
     }
 
-
-    // 결제창 열기
-    await payment.requestPayment({
-
-      method: "CARD",
-
-      amount: {
-
-        currency: "KRW",
-
-        value:
-          finalTotal
-
-      },
-
-      orderId:
-        orderId,
-
-      orderName:
-        orderName,
-
-      customerName:
-        name,
-
-      customerMobilePhone:
-        phone.replace(
-          /[^0-9]/g,
-          ""
-        ),
-
-      successUrl:
-        window.location.origin +
-        "/HYEONMONG/success.html",
-
-      failUrl:
-        window.location.origin +
-        "/HYEONMONG/fail.html"
-
-    });
-
-
-  } catch (error) {
-
-    console.error(
-      "주문/결제 오류:",
-      error
-    );
-
-
-    alert(
-      "주문 처리 중 오류가 발생했습니다.\n\n" +
-      (
-        error?.message ||
-        "알 수 없는 오류"
-      )
-    );
-
-  }
-
-};
+  };
 
 
 // ==============================
 // 모달 바깥 클릭
 // ==============================
 
-detailModal.onclick = function (event) {
+detailModal.onclick =
+  function (event) {
 
-  if (event.target === detailModal) {
+    if (
+      event.target ===
+      detailModal
+    ) {
 
-    detailModal.classList.remove("active");
+      detailModal.classList.remove(
+        "active"
+      );
 
-    document.body.style.overflow = "";
-  }
-};
-
-
-cartModal.onclick = function (event) {
-
-  if (event.target === cartModal) {
-
-    cartModal.classList.remove("active");
-
-    document.body.style.overflow = "";
-  }
-};
+      document.body.style.overflow =
+        "";
+    }
+  };
 
 
-orderModal.onclick = function (event) {
+cartModal.onclick =
+  function (event) {
 
-  if (event.target === orderModal) {
+    if (
+      event.target ===
+      cartModal
+    ) {
 
-    orderModal.classList.remove("active");
+      cartModal.classList.remove(
+        "active"
+      );
 
-    document.body.style.overflow = "";
-  }
-};
+      document.body.style.overflow =
+        "";
+    }
+  };
+
+
+orderModal.onclick =
+  function (event) {
+
+    if (
+      event.target ===
+      orderModal
+    ) {
+
+      orderModal.classList.remove(
+        "active"
+      );
+
+      document.body.style.overflow =
+        "";
+    }
+  };
 
 
 // ==============================
